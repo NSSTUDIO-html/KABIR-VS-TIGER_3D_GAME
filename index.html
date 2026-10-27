@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b10" />
+  <title>Kabir vs Tiger 3D</title>
+  <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 12% 12%, #a50e2238 0%, transparent 38%),
+        radial-gradient(ellipse at 88% 78%, #078a4130 0%, transparent 40%),
+        radial-gradient(ellipse at center, #171d24 0%, #080b10 65%, #020304 100%);
+      background-size: 200% 200%;
+      animation: bg-move 18s ease infinite;
+      font-family: Arial, sans-serif;
+    }
+
+    @keyframes bg-move {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    /* Game Title */
+    .glow-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #ffffff;
+
+  text-shadow:
+    0 0 8px #ff2438,
+    0 0 20px #ff243855,
+    0 0 35px #00e85b30;
+
+  animation: title-glow 3s ease-in-out infinite alternate;
+}
+
+    @keyframes title-glow {
+      from {
+        text-shadow:
+          0 0 10px #ff243855,
+          0 0 24px #ff243833;
+      }
+
+      to {
+        text-shadow:
+          0 0 14px #ff3344,
+          0 0 32px #ff243866,
+          0 0 45px #00e85b33;
+      }
+    }
+
+    /* Image Slider */
+    .slider {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      overflow: hidden;
+      isolation: isolate;
+      border-radius: 18px;
+      border: 1px solid #ffffff25;
+      background: #080b10;
+      box-shadow:
+        0 0 0 1px #ff273515,
+        0 15px 45px #000000bb,
+        0 0 25px #ff263820,
+        0 0 30px #00e85b12;
+      transition:
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
+        transform 0.35s ease;
+    }
+
+    .slider:hover {
+      border-color: #ff344b99;
+      box-shadow:
+        0 0 0 1px #00e85b25,
+        0 20px 55px #000000cc,
+        0 0 35px #ff273840,
+        0 0 25px #00e85b20;
+      transform: translateY(-3px);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      animation: fade 16s infinite;
+      object-fit: cover;
+      filter: brightness(0.78) contrast(1.12) saturate(1.12);
+      transform: scale(1.02);
+      transition: filter 0.4s ease;
+    }
+
+    .slider:hover .slide {
+      filter: brightness(0.96) contrast(1.12) saturate(1.15);
+    }
+
+    .slide:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .slide:nth-child(2) {
+      animation-delay: 4s;
+    }
+
+    .slide:nth-child(3) {
+      animation-delay: 8s;
+    }
+
+    .slide:nth-child(4) {
+      animation-delay: 12s;
+    }
+
+    @keyframes fade {
+      0%, 25% {
+        opacity: 1;
+      }
+
+      30%, 100% {
+        opacity: 0;
+      }
+    }
+
+    /* Game Buttons */
+    .play-btn {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 7px;
+      min-width: 215px;
+      background: linear-gradient(
+        110deg,
+        #a90e22 0%,
+        #ed243b 35%,
+        #151b20 65%,
+        #087b39 100%
+      );
+      background-size: 250% 100%;
+      color: #ffffff;
+      border: 1px solid #ffffff35;
+      border-radius: 10px;
+      padding: 16px 30px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background-position 0.4s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+      box-shadow:
+        0 8px 24px #00000065,
+        0 0 18px #ff263820;
+    }
+
+    .play-btn::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: -120%;
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(
+        100deg,
+        transparent,
+        #ffffff30,
+        transparent
+      );
+      transform: skewX(-25deg);
+      transition: left 0.6s ease;
+    }
+
+    .play-btn:hover {
+      background-position: 100% 50%;
+      transform: translateY(-4px);
+      border-color: #ff5265aa;
+      box-shadow:
+        0 12px 30px #00000090,
+        0 0 24px #ff273835,
+        0 0 18px #00e85b20;
+    }
+
+    .play-btn:hover::before {
+      left: 150%;
+    }
+
+    .play-btn:active {
+      transform: scale(0.97);
+    }
+
+    .play-btn:focus-visible {
+      outline: 2px solid #00ef70;
+      outline-offset: 5px;
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 600px) {
+      body {
+        padding: 18px 12px;
+      }
+
+      .glow-text {
+        font-size: 2.2rem;
+        line-height: 1.15;
+        letter-spacing: 0.5px;
+        margin-bottom: 25px;
+      }
+
+      .slider {
+        height: 240px;
+        border-radius: 13px;
+        margin-bottom: 28px;
+      }
+
+      .play-btn {
+        width: min(100%, 330px);
+        min-width: 0;
+        padding: 15px 20px;
+        font-size: 0.85rem;
+        letter-spacing: 1.4px;
+        margin: 6px 0;
+      }
+    }
+
+    /* Reduced Motion Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      body,
+      .glow-text {
+        animation: none;
+      }
+
+      .slide {
+        animation: none;
+      }
+
+      .slide:first-child {
+        opacity: 1;
+      }
+
+      .slider,
+      .play-btn,
+      .play-btn::before {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen text-white text-center p-4">
+
+  <!-- Game Title -->
+  <h1 class="glow-text text-5xl md:text-7xl font-extrabold mb-8">
+    Kabir vs Tiger 3D
+  </h1>
+
+  <!-- Character Image Slider -->
+  <div class="slider w-11/12 md:w-2/3 mb-10">
+    <img src="./8_MEDIA-DESIGNS/ntr1.jpg" alt="NTR 1" class="slide">
+    <img src="./8_MEDIA-DESIGNS/ntr2.jpg" alt="NTR 2" class="slide">
+    <img src="./8_MEDIA-DESIGNS/kabir1.jpg" alt="Kabir 1" class="slide">
+    <img src="./8_MEDIA-DESIGNS/kabir2.jpg" alt="Kabir 2" class="slide">
+  </div>
+
+  <!-- Play Game Button -->
+  <button class="play-btn" onclick="window.location.href='./1_FRONTEND/WAR2GAME.html'">
+    ▶ Play Game
+  </button>
+
+  <!-- Game Plan Button -->
+  <button class="play-btn" onclick="window.location.href='./1_FRONTEND/GAME-PLAN.HTML'">
+    ▶ GAME PLAN
+  </button>
+
+  <!-- Instructions Button -->
+  <button class="play-btn" onclick="window.location.href='./1_FRONTEND/INSTRUCTIONS.HTML'">
+    ▶ INSTRUCTIONS
+  </button>
+
+</body>
+</html>
