@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kabir vs Tiger 3D – Game Plan</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--text:#1d1b16;--muted:#6b665a;--accent:#e8741a;--done:#1f9d55;--line:#e3ded0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141414;--card:#1e1e1e;--text:#f1ede4;--muted:#a09a8c;--accent:#ff8a2b;--done:#3ecf7a;--line:#2e2e2e}}
+:root[data-theme="dark"]{--bg:#141414;--card:#1e1e1e;--text:#f1ede4;--muted:#a09a8c;--accent:#ff8a2b;--done:#3ecf7a;--line:#2e2e2e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.9rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 24px}
+h2{display:flex;align-items:center;gap:10px;font-size:1.2rem;margin:32px 0 8px}
+.badge{font-size:.7rem;padding:3px 9px;border-radius:99px;background:var(--accent);color:#fff;letter-spacing:.05em}
+.badge.next{background:var(--muted)}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar span{display:block;height:100%;background:var(--done)}
+.pct{font-size:.85rem;color:var(--muted);margin-bottom:12px}
+ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+li{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.d{min-width:56px;font-weight:700;color:var(--accent);font-size:.9rem;padding-top:2px}
+.t{flex:1}
+.s{font-size:1.1rem}
+li.done .t{color:var(--muted)}
+li.done .d{color:var(--done)}
+.soon{border-style:dashed;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>🐅 Kabir vs Tiger 3D</h1>
+<p class="sub">Reels plan daily · AI Mode first, Multiplayer Mode next</p>
+
+<h2>AI Mode <span class="badge">IN PROGRESS</span></h2>
+<div class="bar"><span id="fill"></span></div>
+<div class="pct" id="pct"></div>
+<ul id="ai"></ul>
+
+<h2>Multiplayer Mode <span class="badge next">NEXT</span></h2>
+<ul>
+<li><span class="d">Day 1</span><span class="t">Planning of all weapons and vehicles</span><span class="s">⏳</span></li>
+<li class="soon"><span class="t">More days coming soon…</span></li>
+</ul>
+</main>
+<script>
+var days=[
+["Creations of 3D faces",1],["Full body Tripo models",1],["Tripo hack models",0],["HUD display",1],
+["Heros animations in Blender/Prisma3D",0],["AI Mode Iceland scene 3D",1],["Weapons models Blender + sounds",1],
+["Integration of all in BabylonJS + HTML5 webpage",0],["Shooting mechanism",0],["Game physics + blood animations + audios AI",0],
+["Riddles setup APIs",0],["AI opponent coding using TensorFlowJS",0],["Game mechanics and winner system",0],["Swapping mechanisms",0]];
+var ul=document.getElementById("ai"),n=0;
+days.forEach(function(x,i){
+var li=document.createElement("li");if(x[1]){li.className="done";n++}
+li.innerHTML='<span class="d">Day '+(i+1)+'</span><span class="t">'+x[0]+'</span><span class="s">'+(x[1]?"✅":"⏳")+'</span>';
+ul.appendChild(li)});
+var p=Math.round(n/days.length*100);
+document.getElementById("fill").style.width=p+"%";
+document.getElementById("pct").textContent=n+" of "+days.length+" days done · "+p+"%";
+</script>
+</body>
+</html>

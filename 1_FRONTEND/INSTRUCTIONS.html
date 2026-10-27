@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>gameins</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--text:#1d1b16;--muted:#6b665a;--accent:#e8741a;--line:#e3ded0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141414;--card:#1e1e1e;--text:#f1ede4;--muted:#a09a8c;--accent:#ff8a2b;--line:#2e2e2e}}
+:root[data-theme="dark"]{--bg:#141414;--card:#1e1e1e;--text:#f1ede4;--muted:#a09a8c;--accent:#ff8a2b;--line:#2e2e2e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.9rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 8px}
+h2{font-size:1.15rem;margin:28px 0 8px;color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:8px}
+.card p{margin:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:480px){.grid{grid-template-columns:1fr}}
+ol,ul{margin:0;padding-left:20px}
+li{margin:4px 0}
+.w{display:flex;gap:12px;align-items:center}
+.n{min-width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700}
+.secret{border:2px dashed var(--accent)}
+.soon{border-style:dashed;color:var(--muted)}
+.hp{height:12px;border-radius:99px;background:#2ecc71;margin-top:6px}
+</style>
+</head>
+<body>
+<main>
+<h1>🐅 Kabir vs Tiger 3D</h1>
+<p class="sub">Game instructions · AI Mode</p>
+
+<h2>Characters</h2>
+<div class="grid">
+<div class="card"><b>Kabir</b><p>Hrithik Roshan</p></div>
+<div class="card"><b>Tiger</b><p>Jr NTR</p></div>
+</div>
+
+<h2>AI Mode – two ways to play</h2>
+<div class="card"><ul>
+<li>You play as <b>Kabir</b>, the AI plays <b>Tiger</b></li>
+<li>You play as <b>Tiger</b>, the AI plays <b>Kabir</b></li>
+</ul></div>
+
+<h2>Health</h2>
+<div class="card"><p>Both fighters start with <b>100% blood HP</b>.</p><div class="hp"></div></div>
+
+<h2>The 5 weapons</h2>
+<div class="card">
+<p style="margin-bottom:10px">The opponent tells you to unlock each weapon by solving riddles of one subject:</p>
+<ol style="list-style:none;padding:0">
+<li class="w"><span class="n">1</span>Maths</li>
+<li class="w"><span class="n">2</span>Physics</li>
+<li class="w"><span class="n">3</span>Chemistry</li>
+<li class="w"><span class="n">4</span>Coding</li>
+<li class="w"><span class="n">5</span>English grammar</li>
+</ol></div>
+
+<h2>Unlock rule</h2>
+<div class="card"><p>Both fighters, the human player and the AI, unlock weapons the same way. If the player unlocks some of the 5 weapons, the opponent unlocks the same number out of 5.</p></div>
+
+<h2>Controls</h2>
+<div class="card"><ul>
+<li><b>4 move buttons</b> to move</li>
+<li><b>1 shoot button</b> for each fighter</li>
+</ul></div>
+
+<h2>🤫 Secret</h2>
+<div class="card secret"><p>To defeat the AI opponent completely, swipe along the weapon bar from the <b>first weapon to the last</b>. All 5 weapons unlock at once.</p></div>
+
+<h2>Multiplayer Mode</h2>
+<div class="card soon"><p>Coming soon…</p></div>
+</main>
+</body>
+</html>

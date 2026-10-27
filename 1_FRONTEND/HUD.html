@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Kabir vs Tiger 3D | Game HUD</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #080b10;
+      color: white;
+      font-family: Arial, sans-serif;
+      touch-action: none;
+      user-select: none;
+    }
+
+    #game {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, #202832 0%, #080b10 75%);
+      overflow: hidden;
+    }
+
+    #game-title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      text-align: center;
+      color: #ffffff20;
+      font-size: clamp(24px, 6vw, 70px);
+      font-weight: 900;
+      letter-spacing: 5px;
+      pointer-events: none;
+    }
+
+    .weapon-panel {
+      position: absolute;
+      top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      width: min(45vw, 340px);
+      border-radius: 14px;
+      background: #10151ddd;
+      backdrop-filter: blur(8px);
+      z-index: 5;
+    }
+
+    #t-weapons {
+      left: 12px;
+      border: 2px solid #18d66b;
+      box-shadow: 0 0 15px #18d66b30;
+    }
+
+    #k-weapons {
+      right: 12px;
+      border: 2px solid #ff3434;
+      box-shadow: 0 0 15px #ff343430;
+    }
+
+    .hero-name {
+      margin: 0;
+      font-size: clamp(12px, 2vw, 17px);
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    #t-weapons .hero-name {
+      color: #18e879;
+    }
+
+    #k-weapons .hero-name {
+      color: #ff4141;
+      text-align: right;
+    }
+
+    .weapon-list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .weapon {
+      min-width: 0;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ffffff30;
+      border-radius: 8px;
+      background: #ffffff08;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    #t-weapons .weapon.selected {
+      border: 2px solid #18e879;
+      background: #18e87925;
+    }
+
+    #k-weapons .weapon.selected {
+      border: 2px solid #ff4141;
+      background: #ff414125;
+    }
+
+    .weapon img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .weapon-label {
+      font-size: 9px;
+      line-height: 1.2;
+      text-align: center;
+      margin-top: 3px;
+      color: #ffffffc0;
+      overflow-wrap: anywhere;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 6;
+      display: grid;
+      grid-template-columns: repeat(3, clamp(43px, 11vw, 66px));
+      grid-template-rows: repeat(3, clamp(43px, 11vw, 66px));
+      gap: 5px;
+    }
+
+    #t-controls {
+      left: max(14px, env(safe-area-inset-left));
+    }
+
+    #k-controls {
+      right: max(14px, env(safe-area-inset-right));
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff45;
+      border-radius: 13px;
+      color: white;
+      font-size: clamp(16px, 4vw, 25px);
+      font-weight: 900;
+      background: #171d27d9;
+      box-shadow: 0 4px 10px #0008;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    #t-controls .control {
+      border-color: #18d66b99;
+    }
+
+    #k-controls .control {
+      border-color: #ff343499;
+    }
+
+    #t-controls .control.active {
+      background: #087a3b;
+      border-color: #42ff91;
+      transform: scale(.95);
+    }
+
+    #k-controls .control.active {
+      background: #a41515;
+      border-color: #ff7777;
+      transform: scale(.95);
+    }
+
+    .up {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .left {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .shoot {
+      grid-column: 2;
+      grid-row: 2;
+      font-size: clamp(10px, 2.5vw, 15px);
+      border-radius: 50%;
+    }
+
+    .right {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .down {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    #status {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffffff90;
+      font-size: 10px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    @media (orientation: landscape) {
+      .weapon-panel {
+        top: 10px;
+        width: min(37vw, 340px);
+      }
+
+      .controls {
+        grid-template-columns: repeat(3, clamp(40px, 8vh, 58px));
+        grid-template-rows: repeat(3, clamp(40px, 8vh, 58px));
+        gap: 4px;
+        bottom: 12px;
+      }
+
+      .weapon {
+        padding: 3px;
+      }
+
+      .weapon-panel {
+        padding: 7px;
+        gap: 5px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .weapon-panel {
+        width: 47vw;
+        padding: 6px;
+      }
+
+      .weapon-list {
+        gap: 3px;
+      }
+
+      .weapon-label {
+        font-size: 7px;
+      }
+
+      .controls {
+        grid-template-columns: repeat(3, 39px);
+        grid-template-rows: repeat(3, 39px);
+        gap: 4px;
+      }
+    }
+      .extra-control {
+  position: absolute;
+  width: clamp(48px, 12vw, 68px);
+  height: clamp(42px, 10vw, 56px);
+  font-size: 11px;
+  border-radius: 10px;
+}
+
+#t-controls .extra-control[data-action="jump"],
+#k-controls .extra-control[data-action="jump"] {
+  top: 0;
+}
+
+#t-controls .extra-control[data-action="crouch"],
+#k-controls .extra-control[data-action="crouch"] {
+  top: 80px;
+}
+
+#t-controls .extra-control {
+  left: 100px;
+}
+
+#k-controls .extra-control {
+  right: 100px;
+}
+
+#t-controls .extra-control {
+  color: #18e879;
+}
+
+#k-controls .extra-control {
+  color: #ff4141;
+}
+
+@media (max-width: 380px) {
+  #t-controls .extra-control {
+    left: 100px;
+  }
+
+  #k-controls .extra-control {
+    right: 100px;
+  }
+}
+      
+      #pause-btn {
+  position: absolute;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  padding: 10px 18px;
+  border: 2px solid #ffffff70;
+  border-radius: 10px;
+  background: #171d27ee;
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#pause-btn.paused {
+  background: #e6a817;
+  color: #111;
+  border-color: #ffda70;
+}
+
+@media (orientation: landscape) {
+  #pause-btn {
+    top: 50px;
+  }
+}
+      .health-panel {
+  position: absolute;
+  top: 105px;
+  width: min(35vw, 280px);
+  padding: 8px 10px;
+  background: #10151ddd;
+  border-radius: 10px;
+  z-index: 8;
+}
+
+#t-health {
+  left: 12px;
+}
+
+#k-health {
+  right: 12px;
+}
+
+.health-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: white;
+  font-size: clamp(9px, 2vw, 13px);
+  font-weight: 900;
+}
+
+.health-track {
+  height: 12px;
+  width: 100%;
+  background: #333944;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
+  transition: width 0.2s ease;
+}
+
+.tiger-track {
+  border: 1px solid #18e879;
+}
+
+.tiger-health {
+  background: linear-gradient(90deg, #078b40, #35ff88);
+}
+
+.kabir-track {
+  border: 1px solid #ff4141;
+}
+
+.kabir-health {
+  background: linear-gradient(90deg, #a50000, #ff4545);
+}
+
+@media (orientation: landscape) {
+  .health-panel {
+    top: 90px;
+    width: min(30vw, 260px);
+  }
+}
+  </style>
+</head>
+
+<body>
+  <main id="game">
+
+    <div id="game-title">KABIR VS TIGER 3D</div>
+<!-- PAUSE BUTTON -->
+<button id="pause-btn" type="button" aria-label="Pause game">
+  ⏸ PAUSE
+</button>
+        
+        <!-- TIGER HEALTH BAR -->
+<div id="t-health" class="health-panel">
+  <div class="health-info">
+    <span>TIGER</span>
+    <span id="t-health-text">100 / 100</span>
+  </div>
+  <div class="health-track tiger-track">
+    <div id="t-health-fill" class="health-fill tiger-health"></div>
+  </div>
+</div>
+
+<!-- KABIR HEALTH BAR -->
+<div id="k-health" class="health-panel">
+  <div class="health-info">
+    <span>KABIR</span>
+    <span id="k-health-text">100 / 100</span>
+  </div>
+  <div class="health-track kabir-track">
+    <div id="k-health-fill" class="health-fill kabir-health"></div>
+  </div>
+</div>
+    <!-- TIGER WEAPONS: TOP LEFT -->
+    <section id="t-weapons" class="weapon-panel">
+      <h2 class="hero-name">TIGER</h2>
+
+      <div class="weapon-list">
+        <button class="weapon selected" data-hero="tiger"
+                data-weapon="hand-grips" aria-label="Select Hand Grips">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/hand-grips.jpg" alt="Hand Grips">
+        </button>
+
+        <button class="weapon" data-hero="tiger"
+                data-weapon="hammer" aria-label="Select Hammer">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/hammer.png" alt="Hammer">
+        </button>
+
+        <button class="weapon" data-hero="tiger"
+                data-weapon="shotgun" aria-label="Select Shotgun">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/shotgun.jpg" alt="Shotgun">
+        </button>
+
+        <button class="weapon" data-hero="tiger"
+                data-weapon="pistols" aria-label="Select Pistols">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/pistol.jpg" alt="Pistols">
+        </button>
+
+        <button class="weapon" data-hero="tiger"
+                data-weapon="dual-swords" aria-label="Select Dual Swords">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/dual-swords.jpg" alt="Dual Swords">
+        </button>
+      </div>
+
+      <div class="weapon-list">
+        <div class="weapon-label">Hand Grips</div>
+        <div class="weapon-label">Hammer</div>
+        <div class="weapon-label">Shotgun</div>
+        <div class="weapon-label">Pistols</div>
+        <div class="weapon-label">Dual Swords</div>
+      </div>
+    </section>
+
+    <!-- KABIR WEAPONS: TOP RIGHT -->
+    <section id="k-weapons" class="weapon-panel">
+      <h2 class="hero-name">KABIR</h2>
+
+      <div class="weapon-list">
+        <button class="weapon selected" data-hero="kabir"
+                data-weapon="katana" aria-label="Select Katana">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/katana.png" alt="Katana">
+        </button>
+
+        <button class="weapon" data-hero="kabir"
+                data-weapon="dual-rifles" aria-label="Select Dual Rifles">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/rifles.jpg" alt="Dual Rifles">
+        </button>
+
+        <button class="weapon" data-hero="kabir"
+                data-weapon="dual-axes" aria-label="Select Dual Axes">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/dual-axe.jpg" alt="Dual Axes">
+        </button>
+
+        <button class="weapon" data-hero="kabir"
+                data-weapon="sniper-rifle" aria-label="Select Sniper Rifle">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/sniper-R.webp" alt="Sniper Rifle">
+        </button>
+
+        <button class="weapon" data-hero="kabir"
+                data-weapon="dual-pistols" aria-label="Select Dual Pistols">
+          <img src="../8_MEDIA-DESIGNS/HEROS-WEAPONS/dual-p.png" alt="Dual Pistols">
+        </button>
+      </div>
+
+      <div class="weapon-list">
+        <div class="weapon-label">Katana</div>
+        <div class="weapon-label">Dual Rifles</div>
+        <div class="weapon-label">Dual Axes</div>
+        <div class="weapon-label">Sniper Rifle</div>
+        <div class="weapon-label">Dual Pistols</div>
+      </div>
+    </section>
+
+    <!-- TIGER CONTROLS: BOTTOM LEFT -->
+    <section id="t-controls" class="controls" aria-label="Tiger controls">
+      <button class="control up" data-hero="tiger" data-action="up"
+              aria-label="Tiger move up">▲</button>
+
+      <button class="control left" data-hero="tiger" data-action="left"
+              aria-label="Tiger move left">◀</button>
+
+      <button class="control shoot" data-hero="tiger" data-action="shoot"
+              aria-label="Tiger shoot">SHOOT</button>
+
+      <button class="control right" data-hero="tiger" data-action="right"
+              aria-label="Tiger move right">▶</button>
+
+      <button class="control down" data-hero="tiger" data-action="down"
+              aria-label="Tiger move down">▼</button>
+          <button class="control extra-control"
+        data-hero="tiger"
+        data-action="jump">
+  JUMP
+</button>
+
+<button class="control extra-control"
+        data-hero="tiger"
+        data-action="crouch">
+  HIDE
+</button>
+    </section>
+
+    <!-- KABIR CONTROLS: BOTTOM RIGHT -->
+    <section id="k-controls" class="controls" aria-label="Kabir controls">
+      <button class="control up" data-hero="kabir" data-action="up"
+              aria-label="Kabir move up">▲</button>
+
+      <button class="control left" data-hero="kabir" data-action="left"
+              aria-label="Kabir move left">◀</button>
+
+      <button class="control shoot" data-hero="kabir" data-action="shoot"
+              aria-label="Kabir shoot">SHOOT</button>
+
+      <button class="control right" data-hero="kabir" data-action="right"
+              aria-label="Kabir move right">▶</button>
+
+      <button class="control down" data-hero="kabir" data-action="down"
+              aria-label="Kabir move down">▼</button>
+          <button class="control extra-control"
+        data-hero="kabir"
+        data-action="jump">
+  JUMP
+</button>
+
+<button class="control extra-control"
+        data-hero="kabir"
+        data-action="crouch">
+  HIDE
+</button>
+    </section>
+
+    <div id="status">HUD READY · CONNECT YOUR THREE.JS GAME LOGIC</div>
+  </main>
+
+  <script>
+    // Selected weapon for each hero
+    const selectedWeapons = {
+      tiger: "hand-grips",
+      kabir: "katana"
+    };
+
+    // Track currently held controls
+    const activeControls = new Set();
+
+    // Weapon selection
+    document.querySelectorAll(".weapon[data-weapon]").forEach(button => {
+      button.addEventListener("click", () => {
+        const hero = button.dataset.hero;
+        const weapon = button.dataset.weapon;
+
+        document.querySelectorAll(
+          `.weapon[data-hero="${hero}"][data-weapon]`
+        ).forEach(item => item.classList.remove("selected"));
+
+        button.classList.add("selected");
+        selectedWeapons[hero] = weapon;
+
+        // Listen for this event from your game code
+        window.dispatchEvent(new CustomEvent("weaponselect", {
+          detail: { hero, weapon }
+        }));
+
+        console.log(`${hero} selected ${weapon}`);
+      });
+    });
+
+    // Hold-to-move and shoot controls
+    document.querySelectorAll(".control[data-action]").forEach(button => {
+      const hero = button.dataset.hero;
+      const action = button.dataset.action;
+      const controlId = `${hero}:${action}`;
+
+      function press(event) {
+        event.preventDefault();
+
+        if (activeControls.has(controlId)) return;
+
+        activeControls.add(controlId);
+        button.classList.add("active");
+
+        window.dispatchEvent(new CustomEvent("hudcontrol", {
+          detail: {
+            hero,
+            action,
+            pressed: true,
+            weapon: selectedWeapons[hero]
+          }
+        }));
+      }
+
+      function release(event) {
+        if (event) event.preventDefault();
+
+        activeControls.delete(controlId);
+        button.classList.remove("active");
+
+        window.dispatchEvent(new CustomEvent("hudcontrol", {
+          detail: {
+            hero,
+            action,
+            pressed: false,
+            weapon: selectedWeapons[hero]
+          }
+        }));
+      }
+
+      button.addEventListener("pointerdown", press);
+      button.addEventListener("pointerup", release);
+      button.addEventListener("pointercancel", release);
+      button.addEventListener("lostpointercapture", release);
+
+      button.addEventListener("contextmenu", event => {
+        event.preventDefault();
+      });
+    });
+
+    // Release held controls if the page loses focus
+    window.addEventListener("blur", () => {
+      document.querySelectorAll(".control.active").forEach(button => {
+        const hero = button.dataset.hero;
+        const action = button.dataset.action;
+        const controlId = `${hero}:${action}`;
+
+        activeControls.delete(controlId);
+        button.classList.remove("active");
+
+        window.dispatchEvent(new CustomEvent("hudcontrol", {
+          detail: {
+            hero,
+            action,
+            pressed: false,
+            weapon: selectedWeapons[hero]
+          }
+        }));
+      });
+    });
+
+    // Example integration:
+    // window.addEventListener("hudcontrol", event => {
+    //   const { hero, action, pressed, weapon } = event.detail;
+    //   // Connect these events to your Three.js character/game logic.
+    // });
+    //
+    // window.addEventListener("weaponselect", event => {
+    //   const { hero, weapon } = event.detail;
+    //   // Update the selected weapon in your game logic.
+    // });
+      
+      const pauseBtn = document.getElementById("pause-btn");
+let isPaused = false;
+
+pauseBtn.addEventListener("click", () => {
+  isPaused = !isPaused;
+
+  pauseBtn.classList.toggle("paused", isPaused);
+  pauseBtn.textContent = isPaused ? "▶ RESUME" : "⏸ PAUSE";
+  pauseBtn.setAttribute(
+    "aria-label",
+    isPaused ? "Resume game" : "Pause game"
+  );
+
+  window.dispatchEvent(new CustomEvent("gamepause", {
+    detail: { paused: isPaused }
+  }));
+});
+      const heroHealth = {
+  tiger: 100,
+  kabir: 100
+};
+
+function updateHealth(hero, health) {
+  if (!(hero in heroHealth)) return;
+
+  health = Math.max(0, Math.min(100, Number(health)));
+  if (!Number.isFinite(health)) return;
+
+  heroHealth[hero] = health;
+
+  const prefix = hero === "tiger" ? "t" : "k";
+
+  document.getElementById(`${prefix}-health-fill`)
+    .style.width = `${health}%`;
+
+  document.getElementById(`${prefix}-health-text`)
+    .textContent = `${health} / 100`;
+}
+
+// Example: Kabir takes 25 damage
+// updateHealth("kabir", heroHealth.kabir - 25);
+
+// Example: Tiger takes 10 damage
+// updateHealth("tiger", heroHealth.tiger - 10);
+
+// Connect to your combat system:
+window.addEventListener("healthchange", event => {
+  const { hero, health } = event.detail;
+  updateHealth(hero, health);
+});
+  </script>
+</body>
+</html>
