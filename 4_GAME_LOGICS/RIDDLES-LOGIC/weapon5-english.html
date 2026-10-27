@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>English Grammar Weapon | Kabir vs Tiger 3D</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#f2f2f2;min-height:100vh;display:flex;justify-content:center;padding:16px}
+main{width:100%;max-width:640px}h1{font-size:1.3rem;margin:0 0 6px;color:#ff9f1c}
+.bar{display:flex;justify-content:space-between;font-size:.9rem;opacity:.85;margin-bottom:12px}
+.card{background:#1a1d24;border-radius:12px;padding:18px}
+#q{font-size:1.1rem;margin:0 0 14px;line-height:1.4}
+.o{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:2px solid #2d3340;border-radius:8px;background:#232834;color:inherit;font-size:1rem;cursor:pointer}
+.o:disabled{cursor:default}.ok{border-color:#2ecc71;background:#1d3a2a}.no{border-color:#e74c3c;background:#3a1d1d}
+#m{min-height:1.5em;margin:10px 0;font-weight:600}
+#n{padding:10px 18px;border:0;border-radius:8px;background:#ff9f1c;color:#111;font-weight:700;cursor:pointer}
+</style></head><body><main>
+<h1>⚔️ English Grammar Weapon</h1>
+<div class="bar"><span id="p"></span><span id="s"></span></div>
+<div class="card"><p id="q"></p><div id="a"></div><div id="m"></div><button id="n" hidden>Next</button></div>
+</main><script>
+const Q=[["She ___ to school every day.", ["go", "goes", "going", "gone"], 1], ["They ___ playing football now.", ["is", "am", "are", "was"], 2], ["What is the plural of \"child\"?", ["childs", "childes", "children", "childrens"], 2], ["What is the past tense of \"go\"?", ["goed", "went", "gone", "going"], 1], ["What is the past participle of \"eat\"?", ["ate", "eaten", "eating", "eated"], 1], ["___ apple a day keeps the doctor away.", ["A", "An", "The", "No article"], 1], ["___ sun rises in the east.", ["A", "An", "The", "No article"], 2], ["Which word is a noun?", ["Quickly", "Happy", "Teacher", "Run"], 2], ["Which word is a verb?", ["Beautiful", "Jump", "Table", "Slowly"], 1], ["Which word is an adjective?", ["Brave", "Bravely", "Bravery", "Braves"], 0], ["Which word is an adverb?", ["Quick", "Quickly", "Quickness", "Quicker"], 1], ["Which word is a pronoun?", ["Table", "He", "Run", "Green"], 1], ["I have ___ umbrella.", ["a", "an", "the", "any"], 1], ["He is ___ than his brother.", ["tall", "taller", "tallest", "most tall"], 1], ["She is the ___ girl in the class.", ["smart", "smarter", "smartest", "more smart"], 2], ["Choose the correct sentence.", ["He don't like tea", "He doesn't like tea", "He not like tea", "He no like tea"], 1], ["Choose the correct sentence.", ["I am agree", "I agree", "I agreeing", "I agrees"], 1], ["I ___ lunch when you called.", ["eat", "was eating", "eaten", "eats"], 1], ["We ___ finished our homework.", ["has", "have", "is", "was"], 1], ["If it rains, we ___ at home.", ["stay", "stayed", "will stay", "staying"], 2], ["The book is ___ the table.", ["of", "on", "and", "but"], 1], ["Which word is a conjunction?", ["And", "Slowly", "Table", "Green"], 0], ["___ is your name?", ["Who", "What", "Where", "Which one"], 1], ["Which sentence is in the passive voice?", ["The cat chased the mouse", "The mouse was chased by the cat", "The cat is chasing the mouse", "The cat will chase the mouse"], 1], ["What is the plural of \"tooth\"?", ["tooths", "teeth", "teeths", "toothes"], 1], ["Which spelling is correct?", ["Recieve", "Receive", "Receeve", "Riceive"], 1], ["Which word is a proper noun?", ["city", "India", "river", "country"], 1], ["Neither of the boys ___ here.", ["are", "is", "were", "be"], 1], ["What is the past tense of \"buy\"?", ["buyed", "bought", "brought", "boughten"], 1], ["Which sentence is punctuated correctly?", ["What is your name.", "What is your name,", "What is your name?", "what is your name"], 2], ["Which shows possession correctly?", ["The dogs bone", "The dog's bone", "The dogs' bone's", "The dog bone's"], 1], ["He ___ a doctor.", ["are", "am", "is", "be"], 2], ["What is the antonym of \"increase\"?", ["Rise", "Decrease", "Grow", "Add"], 1], ["What is a synonym of \"big\"?", ["Small", "Tiny", "Large", "Short"], 2], ["What is the comparative form of \"good\"?", ["gooder", "better", "best", "well"], 1], ["What is the superlative form of \"bad\"?", ["worse", "baddest", "worst", "badder"], 2], ["I look forward to ___ you.", ["see", "seeing", "saw", "seen"], 1], ["Which is a complete sentence?", ["Running fast", "She runs fast.", "Because he ran", "In the park"], 1], ["There ___ many books on the shelf.", ["is", "are", "am", "be"], 1], ["You are coming, ___?", ["isn't you", "aren't you", "don't you", "won't you"], 1], ["She has been working ___ morning.", ["for", "since", "from", "at"], 1], ["I have lived here ___ five years.", ["since", "for", "from", "at"], 1], ["What is the plural of \"mouse\" (the animal)?", ["mouses", "mice", "mices", "mouse's"], 1], ["He apologised ___ being late.", ["for", "to", "at", "with"], 0], ["Which word is an article?", ["The", "Run", "Quick", "Under"], 0], ["Each of the students ___ a book.", ["have", "has", "are", "were"], 1], ["He said, \"I am happy.\" → He said that he ___ happy.", ["is", "was", "were", "be"], 1], ["Choose the correct sentence.", ["She can sings.", "She can sing.", "She can sang.", "She cans sing."], 1], ["He speaks English ___.", ["fluent", "fluently", "fluency", "fluenter"], 1], ["Choose the correct sentence.", ["Their going to school", "They're going to school", "There going to school", "Thier going to school"], 1]];
+const $=i=>document.getElementById(i);
+let i=0,sc=0,order=Q.map((_,k)=>k).sort(()=>Math.random()-.5);
+function show(){
+ if(i>=order.length){$("q").textContent="Finished! Weapons unlocked: "+sc+" / "+Q.length;$("a").innerHTML="";$("m").textContent="";$("n").textContent="Play again";$("n").hidden=false;$("n").onclick=()=>location.reload();return}
+ const [q,o,ans]=Q[order[i]];
+ const opts=o.map((t,k)=>[t,k===ans]).sort(()=>Math.random()-.5);
+ $("p").textContent="Question "+(i+1)+" / "+Q.length;$("s").textContent="Unlocked: "+sc;
+ $("q").textContent=q;$("a").innerHTML="";$("m").textContent="";$("n").hidden=true;
+ opts.forEach(([t,c],k)=>{const b=document.createElement("button");b.className="o";b.textContent="ABCD"[k]+") "+t;
+  b.onclick=()=>{[...$("a").children].forEach((x,j)=>{x.disabled=true;if(opts[j][1])x.classList.add("ok")});
+   if(c){sc++;$("m").textContent="✅ Correct! Weapon unlocked."}else{b.classList.add("no");$("m").textContent="❌ Wrong. Weapon stays locked."}
+   $("s").textContent="Unlocked: "+sc;$("n").textContent=i==order.length-1?"Finish":"Next";$("n").hidden=false;$("n").onclick=()=>{i++;show()}};
+  $("a").appendChild(b)});
+}
+show();
+</script></body></html>
