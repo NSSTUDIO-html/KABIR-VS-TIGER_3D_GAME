@@ -14,7 +14,10 @@
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #000000, #0f0f0f 70%);
+    background:
+      radial-gradient(ellipse at top left, rgba(0, 255, 85, 0.09), transparent 45%),
+      radial-gradient(ellipse at bottom right, rgba(255, 0, 35, 0.12), transparent 45%),
+      linear-gradient(135deg, #030604, #080b09 55%, #100404);
     color: #fff;
     display: flex;
     justify-content: center;
@@ -26,11 +29,14 @@
     text-align: center;
     width: 90%;
     max-width: 600px;
-    background: rgba(0, 0, 0, 0.8);
+    background: linear-gradient(145deg, rgba(13, 22, 16, 0.97), rgba(15, 5, 7, 0.97));
+    border: 1px solid rgba(0, 255, 85, 0.35);
     border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 0 25px rgba(255, 0, 0, 0.3),
-                0 0 30px rgba(0, 255, 0, 0.2);
+    box-shadow:
+      0 0 20px rgba(0, 255, 85, 0.08),
+      0 0 35px rgba(255, 0, 35, 0.08),
+      inset 0 0 25px rgba(0, 255, 85, 0.025);
     transition: 0.3s;
   }
 
@@ -40,7 +46,8 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #00ff55;
-    text-shadow: 0 0 10px #00ff55, 0 0 20px #ff0000;
+    text-shadow: 0 0 8px rgba(0, 255, 85, 0.65),
+                 0 0 22px rgba(0, 255, 85, 0.2);
   }
 
   .mode-tabs {
@@ -53,23 +60,36 @@
 
   .tab-button {
     flex: 1 1 45%;
-    padding: 10px;
-    border: 2px solid #00ff55;
+    padding: 12px 10px;
+    border: 1px solid #285e3b;
     border-radius: 10px;
-    background: #111;
-    color: #fff;
+    background: linear-gradient(145deg, #111a14, #100b0c);
+    color: #d8e8dc;
     cursor: pointer;
     transition: 0.3s;
     font-weight: bold;
-    text-shadow: 0 0 5px #00ff55;
+    text-shadow: 0 0 5px rgba(0, 255, 85, 0.15);
   }
 
   .tab-button.active,
   .tab-button:hover {
-    background: linear-gradient(90deg, #00ff55, #ff0000);
-    color: #000;
+    background: linear-gradient(100deg, #00ff55, #baffcb);
+    border-color: #00ff55;
+    color: #031007;
     text-shadow: none;
-    box-shadow: 0 0 15px #00ff55, 0 0 25px #ff0000;
+    box-shadow: 0 0 12px rgba(0, 255, 85, 0.35);
+  }
+
+  .tab-button:nth-child(2) {
+    border-color: #70232c;
+  }
+
+  .tab-button:nth-child(2).active,
+  .tab-button:nth-child(2):hover {
+    background: linear-gradient(100deg, #ff163d, #ff8a9c);
+    border-color: #ff163d;
+    color: #160306;
+    box-shadow: 0 0 12px rgba(255, 22, 61, 0.35);
   }
 
   .tab-content {
@@ -82,8 +102,14 @@
   }
 
   @keyframes fade {
-    from {opacity: 0;}
-    to {opacity: 1;}
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .image-container {
@@ -92,8 +118,10 @@
     border-radius: 15px;
     overflow: hidden;
     margin-bottom: 15px;
-    border: 2px solid #00ff55;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    border: 1px solid rgba(0, 255, 85, 0.65);
+    background: #080b09;
+    box-shadow: 0 0 16px rgba(0, 255, 85, 0.1),
+                0 0 25px rgba(255, 0, 35, 0.08);
   }
 
   .image-container img {
@@ -106,39 +134,47 @@
   p {
     font-size: 1rem;
     margin: 10px 0 20px;
-    line-height: 1.4;
+    line-height: 1.6;
+    color: #c6d0c9;
   }
 
   .play-btn {
     padding: 12px 30px;
-    border: none;
-    background: linear-gradient(90deg, #ff0000, #00ff55);
-    color: #000;
-    font-weight: bold;
+    border: 1px solid #00ff55;
+    background: linear-gradient(100deg, #00ff55, #a4ffbb);
+    color: #041008;
+    font-weight: 800;
     border-radius: 10px;
     cursor: pointer;
     transition: 0.3s;
     text-transform: uppercase;
-    box-shadow: 0 0 10px #00ff55, 0 0 15px #ff0000;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 12px rgba(0, 255, 85, 0.2);
   }
 
   .play-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px #00ff55, 0 0 30px #ff0000;
+    transform: translateY(-2px);
+    background: linear-gradient(100deg, #ff163d, #ff8a9c);
+    border-color: #ff163d;
+    color: #180306;
+    box-shadow: 0 0 18px rgba(255, 22, 61, 0.4);
   }
 
-  /* ✅ RESPONSIVE DESIGN */
+  /* RESPONSIVE DESIGN */
   @media (max-width: 768px) {
     .title {
       font-size: 1.6rem;
     }
+
     .tab-button {
       flex: 1 1 100%;
       font-size: 0.95rem;
     }
+
     p {
       font-size: 0.9rem;
     }
+
     .play-btn {
       padding: 10px 20px;
       font-size: 0.9rem;
@@ -149,12 +185,16 @@
     .game-container {
       padding: 15px;
     }
+
     .title {
       font-size: 1.4rem;
+      letter-spacing: 1px;
     }
+
     p {
       font-size: 0.85rem;
     }
+
     .play-btn {
       padding: 8px 18px;
       font-size: 0.85rem;
@@ -185,7 +225,7 @@
 
     <!-- Multiplayer Mode -->
     <div id="multiplayer" class="tab-content">
-      <h2 style="color:#ff0000;">Multiplayer Mode</h2>
+      <h2 style="color:#ff163d;">Multiplayer Mode</h2>
       <div class="image-container">
         <img src="../8_MEDIA-DESIGNS/m.jpg" alt="Multiplayer Mode Preview">
       </div>
@@ -202,8 +242,9 @@ function openTab(event, tabName) {
   allTabs.forEach(tab => tab.classList.remove('active'));
   allButtons.forEach(btn => btn.classList.remove('active'));
 
+  allTabs.forEach(tab => tab.classList.remove('active'));
   document.getElementById(tabName).classList.add('active');
-  event.target.classList.add('active');
+  event.currentTarget.classList.add('active');
 }
 </script>
 
