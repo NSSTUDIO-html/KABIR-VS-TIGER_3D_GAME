@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#08111e">
+  <title>Procedural Ice Island 3D | Babylon.js</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #08111e; color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    body { overscroll-behavior: none; }
+    .hidden { display: none !important; }
+
+    #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+
+    .glass { background: rgba(8, 17, 30, .75); border: 1px solid rgba(103, 232, 249, .25);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .control { background: rgba(15, 23, 42, .86); border: 1px solid rgba(148, 163, 184, .35); color: #fff;
+      border-radius: 8px; padding: 8px 12px; font-size: 14px; cursor: pointer; font-family: inherit; }
+    .control:active { transform: scale(.97); }
+    .control.primary { background: #0e7490; border-color: #67e8f9; font-weight: 600; }
+
+    header { position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px; padding: 12px; pointer-events: none; }
+    header > * { pointer-events: auto; }
+    .scene-title { border-radius: 12px; padding: 12px 16px; max-width: calc(100vw - 130px); }
+    .scene-title .brand { margin: 0; font-size: 11px; letter-spacing: .2em; color: #67e8f9; }
+    .scene-title h1 { margin: 2px 0; font-size: 22px; font-weight: 900; letter-spacing: .04em; }
+    .scene-title h1 span { color: #67e8f9; }
+    .scene-title .sub { margin: 0; font-size: 12px; color: #cbd5e1; }
+    #resetView { font-weight: 600; }
+
+    .bottom-info { position: absolute; bottom: 12px; left: 12px; z-index: 10; max-width: 260px;
+      border-radius: 12px; padding: 12px; font-size: 14px; }
+    .bottom-info .t { margin: 0; font-weight: 700; color: #67e8f9; }
+    .bottom-info p { margin: 4px 0 0; color: #e2e8f0; }
+    .bottom-info #modelInfo { margin-top: 8px; font-size: 12px; color: #94a3b8; }
+
+    .bottom-controls { position: absolute; bottom: 12px; right: 12px; z-index: 10; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    @media (max-width: 640px) {
+      .scene-title h1 { font-size: 15px; }
+      .scene-title .sub { font-size: 10px; }
+      .bottom-info { max-width: 170px; font-size: 11px; }
+      .bottom-controls { flex-direction: column; align-items: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene" aria-label="Procedural Ice Island 3D Scene"></canvas>
+
+  <header>
+    <div class="scene-title glass">
+      <p class="brand">NS STUDIO PRESENTS</p>
+      <h1>PROCEDURAL <span>ICE ISLAND</span> 3D</h1>
+      <p class="sub">BABYLON.JS • ZERO EXTERNAL ASSETS</p>
+    </div>
+    <button id="resetView" class="control">Reset view</button>
+  </header>
+
+  <aside class="bottom-info glass">
+    <p class="t">ORBIT CONTROLS</p>
+    <p>Drag: rotate • Pinch/scroll: zoom</p>
+    <p>Two fingers: pan</p>
+    <p id="modelInfo">Status: Fully Procedural</p>
+  </aside>
+
+  <div class="bottom-controls">
+    <button id="toggleSnow" class="control primary">Snow: ON</button>
+    <button id="toggleSpin" class="control">Auto rotate: OFF</button>
+  </div>
+
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    const canvas = document.getElementById('scene');
+
+    // Initialize Babylon Engine
+    let engine;
+    try {
+      engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true, powerPreference: 'high-performance' });
+    } catch (err) {
+      console.error(err);
+      alert('WebGL not available on your device.');
+      return;
+    }
+    engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
+
+    // Create Scene
+    const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0.52, 0.65, 0.78, 1); // Ice blue atmosphere
+    scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+    scene.fogColor = new BABYLON.Color3(0.52, 0.65, 0.78);
+    scene.fogStart = 60;
+    scene.fogEnd = 250;
+
+    // ACES Tone Mapping for cinematic look
+    const ipc = scene.imageProcessingConfiguration;
+    ipc.toneMappingEnabled = true;
+    ipc.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+    ipc.exposure = 1.1;
+
+    // Camera
+    const camera = new BABYLON.ArcRotateCamera('orbit', Math.PI / 4, Math.PI / 3.2, 90, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(canvas, true);
+    camera.inertia = 0.9;
+    camera.panningInertia = 0.9;
+    camera.angularSensibilityX = 450;
+    camera.angularSensibilityY = 450;
+    camera.wheelDeltaPercentage = 0.015;
+    camera.pinchDeltaPercentage = 0.015;
+    camera.useNaturalPinchZoom = true;
+    camera.lowerBetaLimit = 0.02;
+    camera.upperBetaLimit = Math.PI / 2 - 0.01;
+    camera.lowerRadiusLimit = 15;
+    camera.upperRadiusLimit = 200;
+    camera.fov = 0.95;
+
+    // Lighting
+    const hemi = new BABYLON.HemisphericLight('hemi', new BABYLON.Vector3(0, 1, 0), scene);
+    hemi.diffuse = new BABYLON.Color3(0.9, 0.95, 1.0);
+    hemi.groundColor = new BABYLON.Color3(0.2, 0.3, 0.4);
+    hemi.intensity = 0.8;
+
+    const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-0.6, -1, -0.4), scene);
+    sun.diffuse = new BABYLON.Color3(1.0, 0.96, 0.88);
+    sun.intensity = 1.5;
+
+    const fill = new BABYLON.DirectionalLight('fill', new BABYLON.Vector3(0.5, -0.3, 0.5), scene);
+    fill.diffuse = new BABYLON.Color3(0.5, 0.75, 1.0);
+    fill.intensity = 0.5;
+
+    // ==========================================
+    // PROCEDURAL ICE ISLAND GENERATION
+    // ==========================================
+    const terrainSize = 250;
+    const subdivisions = 60;
+    const ground = BABYLON.MeshBuilder.CreateGround("iceIsland", { width: terrainSize, height: terrainSize, subdivisions: subdivisions }, scene);
+    
+    const positions = ground.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+    for (let i = 0; i < positions.length; i += 3) {
+      let x = positions[i];
+      let z = positions[i + 2];
+      let distFromCenter = Math.sqrt(x * x + z * z);
+      
+      if (distFromCenter < 52) {
+        // Multi-frequency procedural noise simulation for jagged mountain peaks and ridges
+        let h = Math.sin(x * 0.08) * Math.cos(z * 0.08) * 6 +
+                Math.sin(x * 0.2) * Math.cos(z * 0.2) * 2.5 +
+                Math.cos(x * 0.03 + z * 0.03) * 8;
+        
+        // Island falloff shape (higher in center, dropping off smoothly near shores)
+        let falloff = Math.max(0, 1 - (distFromCenter / 50));
+        falloff = falloff * falloff * (3 - 2 * falloff); // Smoothstep
+        
+        positions[i + 1] = (h * falloff * 1.4) + (falloff * 22);
+      } else {
+        // Underwater shelves / beach edge
+        positions[i + 1] = -1.5;
+      }
+    }
+    ground.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
+    ground.createNormals();
+
+    // Ice Material
+    const iceMat = new BABYLON.StandardMaterial("iceMat", scene);
+    iceMat.diffuseColor = new BABYLON.Color3(0.82, 0.92, 0.98);
+    iceMat.specularColor = new BABYLON.Color3(0.95, 0.98, 1.0);
+    iceMat.specularPower = 96;
+    ground.material = iceMat;
+
+    // ==========================================
+    // PROCEDURAL OCEAN / WATER PLANE
+    // ==========================================
+    const water = BABYLON.MeshBuilder.CreateGround("water", { width: 500, height: 500 }, scene);
+    water.position.y = -1.0;
+    const waterMat = new BABYLON.StandardMaterial("waterMat", scene);
+    waterMat.diffuseColor = new BABYLON.Color3(0.04, 0.24, 0.42);
+    waterMat.specularColor = new BABYLON.Color3(0.7, 0.85, 1.0);
+    waterMat.alpha = 0.88;
+    water.material = waterMat;
+
+    // ==========================================
+    // PROCEDURAL GLACIAL CRYSTALS & ICEBERGS
+    // ==========================================
+    const crystalMat = new BABYLON.StandardMaterial("crystalMat", scene);
+    crystalMat.diffuseColor = new BABYLON.Color3(0.65, 0.88, 0.98);
+    crystalMat.specularColor = new BABYLON.Color3(1, 1, 1);
+    crystalMat.specularPower = 128;
+    crystalMat.alpha = 0.92;
+
+    for (let i = 0; i < 18; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 15 + Math.random() * 32;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+
+      // Stylized low-poly crystal monoliths
+      const crystal = BABYLON.MeshBuilder.CreateCylinder(`crystal_${i}`, {
+        diameterTop: 0.2 + Math.random() * 0.8,
+        diameterBottom: 1.5 + Math.random() * 2.5,
+        height: 6 + Math.random() * 12,
+        tessellation: 5
+      }, scene);
+
+      crystal.position.set(x, 4 + Math.random() * 3, z);
+      crystal.rotation.x = (Math.random() - 0.5) * 0.3;
+      crystal.rotation.z = (Math.random() - 0.5) * 0.3;
+      crystal.rotation.y = Math.random() * Math.PI;
+      crystal.material = crystalMat;
+    }
+
+    // ==========================================
+    // VOLUMETRIC FALLING SNOW PARTICLES
+    // ==========================================
+    const snowSystem = new BABYLON.ParticleSystem("snow", 2500, scene);
+    snowSystem.particleTexture = new BABYLON.Texture("https://playground.babylonjs.com/textures/flare.png", scene);
+    snowSystem.emitter = new BABYLON.Vector3(0, 60, 0);
+    snowSystem.minEmitBox = new BABYLON.Vector3(-120, 0, -120);
+    snowSystem.maxEmitBox = new BABYLON.Vector3(120, 0, 120);
+    snowSystem.color1 = new BABYLON.Color4(1, 1, 1, 1);
+    snowSystem.color2 = new BABYLON.Color4(0.85, 0.92, 1, 1);
+    snowSystem.colorDead = new BABYLON.Color4(0.6, 0.7, 0.8, 0);
+    snowSystem.minSize = 0.3;
+    snowSystem.maxSize = 0.9;
+    snowSystem.minLifeTime = 6;
+    snowSystem.maxLifeTime = 12;
+    snowSystem.emitRate = 400;
+    snowSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+    snowSystem.gravity = new BABYLON.Vector3(0, -1.5, 0);
+    snowSystem.direction1 = new BABYLON.Vector3(-0.5, -2, -0.5);
+    snowSystem.direction2 = new BABYLON.Vector3(0.5, -3, 0.5);
+    snowSystem.minEmitPower = 1;
+    snowSystem.maxEmitPower = 3;
+    snowSystem.start();
+
+    let snowOn = true;
+      
+      
+    
+    
+    // ==========================================
+    // FIVE SNOWY TREES - ICELAND ARENA
+    // ==========================================
+
+    BABYLON.SceneLoader.ImportMesh(
+    "",
+    "./iceland/",
+    "snowytree_1.glb",
+    scene,
+    function (meshes) {
+        console.log("Tree loaded successfully!", meshes);
+
+        const root = new BABYLON.TransformNode("treeRoot", scene);
+
+        meshes.forEach(mesh => {
+            if (!mesh.parent) {
+                mesh.parent = root;
+            }
+        });
+
+        root.position.set(35, 10, 35);
+        root.scaling.setAll(20);
+    },
+    null,
+    function (scene, message, exception) {
+        console.error("Tree loading failed:", message, exception);
+    }
+);
+      BABYLON.SceneLoader.ImportMesh(
+    "",
+    "./iceland/",
+    "snowytree_1.glb",
+    scene,
+    function (meshes) {
+        console.log("Tree loaded successfully!", meshes);
+
+        const root = new BABYLON.TransformNode("treeRoot", scene);
+
+        meshes.forEach(mesh => {
+            if (!mesh.parent) {
+                mesh.parent = root;
+            }
+        });
+
+        root.position.set(-35, 10, 35);
+        root.scaling.setAll(20);
+    },
+    null,
+    function (scene, message, exception) {
+        console.error("Tree loading failed:", message, exception);
+    }
+);
+      BABYLON.SceneLoader.ImportMesh(
+    "",
+    "./iceland/",
+    "snowytree_1.glb",
+    scene,
+    function (meshes) {
+        console.log("Tree loaded successfully!", meshes);
+
+        const root = new BABYLON.TransformNode("treeRoot", scene);
+
+        meshes.forEach(mesh => {
+            if (!mesh.parent) {
+                mesh.parent = root;
+            }
+        });
+
+        root.position.set(35, 10, -35);
+        root.scaling.setAll(20);
+    },
+    null,
+    function (scene, message, exception) {
+        console.error("Tree loading failed:", message, exception);
+    }
+);
+      BABYLON.SceneLoader.ImportMesh(
+    "",
+    "./iceland/",
+    "snowytree_1.glb",
+    scene,
+    function (meshes) {
+        console.log("Tree loaded successfully!", meshes);
+
+        const root = new BABYLON.TransformNode("treeRoot", scene);
+
+        meshes.forEach(mesh => {
+            if (!mesh.parent) {
+                mesh.parent = root;
+            }
+        });
+
+        root.position.set(35, 10, 60);
+        root.scaling.setAll(20);
+    },
+    null,
+    function (scene, message, exception) {
+        console.error("Tree loading failed:", message, exception);
+    }
+);
+BABYLON.SceneLoader.ImportMesh(
+    "",
+    "./iceland/",
+    "snowytree_1.glb",
+    scene,
+    function (meshes) {
+        console.log("Tree loaded successfully!", meshes);
+
+        const root = new BABYLON.TransformNode("treeRoot", scene);
+
+        meshes.forEach(mesh => {
+            if (!mesh.parent) {
+                mesh.parent = root;
+            }
+        });
+
+        root.position.set(60, 10, 35);
+        root.scaling.setAll(20);
+    },
+    null,
+    function (scene, message, exception) {
+        console.error("Tree loading failed:", message, exception);
+    }
+);
+
+
+
+
+    // ==========================================
+    // UI CONTROLS & EVENT LISTENERS
+    // ==========================================
+    document.getElementById('resetView').addEventListener('click', () => {
+      camera.alpha = Math.PI / 4;
+      camera.beta = Math.PI / 3.2;
+      camera.radius = 90;
+      camera.target.set(0, 0, 0);
+    });
+
+    const toggleSnowBtn = document.getElementById('toggleSnow');
+    toggleSnowBtn.addEventListener('click', () => {
+      snowOn = !snowOn;
+      if (snowOn) {
+        snowSystem.start();
+        toggleSnowBtn.textContent = 'Snow: ON';
+        toggleSnowBtn.classList.add('primary');
+      } else {
+        snowSystem.stop();
+        toggleSnowBtn.textContent = 'Snow: OFF';
+        toggleSnowBtn.classList.remove('primary');
+      }
+    });
+
+    const toggleSpinBtn = document.getElementById('toggleSpin');
+    toggleSpinBtn.addEventListener('click', () => {
+      const on = !camera.useAutoRotationBehavior;
+      camera.useAutoRotationBehavior = on;
+      if (on && camera.autoRotationBehavior) {
+        camera.autoRotationBehavior.idleRotationSpeed = 0.12;
+        camera.autoRotationBehavior.idleRotationWaitTime = 200;
+        camera.autoRotationBehavior.idleRotationSpinupTime = 400;
+      }
+      toggleSpinBtn.textContent = `Auto rotate: ${on ? 'ON' : 'OFF'}`;
+      toggleSpinBtn.classList.toggle('primary', on);
+    });
+
+    // Window Resize Handler
+    window.addEventListener('resize', () => {
+      engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
+      engine.resize();
+    });
+
+    // Render Loop
+    engine.runRenderLoop(() => {
+      camera.panningSensibility = 900 / Math.max(camera.radius, 0.05);
+      scene.render();
+    });
+
+  })();
+  </script>
+</body>
+</html>
