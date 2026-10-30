@@ -747,6 +747,67 @@ window.addEventListener("healthchange", event => {
   const { hero, health } = event.detail;
   updateHealth(hero, health);
 });
+      
+/* =========================================
+   KABIR VS TIGER 3D — WEAPON SHOOT AUDIO
+   5 weapon sounds per hero
+========================================= */
+
+const weaponShootAudio = {
+  tiger: {
+    "hand-grips": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/handgrip.mp3"),
+    "hammer": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/hammer.mp3"),
+    "shotgun": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/shotgun.mp3"),
+    "pistols": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/pistol-sound.mp3"),
+    "dual-swords": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/sword.mp3")
+  },
+
+  kabir: {
+    "katana": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/katana.mp3"),
+    "dual-rifles": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/rifles.mp3"),
+    "dual-axes": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/axes.mp3"),
+    "sniper-rifle": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/sniper.mp3"),
+    "dual-pistols": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/pistol-sound.mp3")
+  }
+};
+
+// Preload all 10 audio files
+Object.values(weaponShootAudio).forEach(heroSounds => {
+  Object.values(heroSounds).forEach(audio => {
+    audio.preload = "auto";
+    audio.volume = 0.8;
+  });
+});
+
+// Play the sound for the currently selected weapon
+function playWeaponShootAudio(hero) {
+  const weapon = selectedWeapons[hero];
+  const audio = weaponShootAudio[hero]?.[weapon];
+
+  if (!audio) {
+    console.warn("No shoot audio found:", hero, weapon);
+    return;
+  }
+
+  // Restart the sound on every shot
+  audio.pause();
+  audio.currentTime = 0;
+
+  audio.play().catch(error => {
+    console.warn("Audio playback failed:", error);
+  });
+}
+
+// Connect both existing SHOOT buttons
+document.querySelectorAll(
+  '.control[data-action="shoot"]'
+).forEach(button => {
+  button.addEventListener("pointerdown", () => {
+    const hero = button.dataset.hero;
+    playWeaponShootAudio(hero);
+  });
+});
+
   </script>
 </body>
 </html>
