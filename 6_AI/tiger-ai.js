@@ -29,7 +29,8 @@
     tfUrl: "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"
   };
 
-  const AI = (window.WeaponAccess && window.WeaponAccess.ai) || "tiger";
+  // Tiger is ALWAYS the AI in this file (Kabir = human player).
+  const AI = "tiger";
   const FOE = AI === "tiger" ? "kabir" : "tiger";
   const PREFIX = AI === "tiger" ? "t" : "k";
 

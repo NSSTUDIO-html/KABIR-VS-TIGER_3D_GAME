@@ -28,7 +28,7 @@
   };
 
   /* Tiger is the human; Kabir is the AI. */
-  var AI = (window.WeaponAccess && window.WeaponAccess.ai) || "kabir";
+  var AI = "kabir"; // Kabir is ALWAYS the AI in this file
   var FOE = AI === "tiger" ? "kabir" : "tiger";
   var PREFIX = AI === "tiger" ? "t" : "k";
 
@@ -750,22 +750,31 @@
     var tries = 0;
 
     (function poll() {
-      scene = window.BABYLON &&
-        BABYLON.Engine &&
-        BABYLON.Engine.LastCreatedScene;
+      scene = window.gameScene ||
+        (window.BABYLON && BABYLON.Engine &&
+          BABYLON.Engine.LastCreatedScene);
 
-      if (scene) {
+      var registry = window.gameHeroes || {};
+
+      meNode = registry[AI] && registry[AI].root;
+      foeNode = registry[FOE] && registry[FOE].root;
+
+      if (scene && !meNode) {
         meNode = scene.getTransformNodeByName(AI + "Root");
-        foeNode = scene.getTransformNodeByName(FOE + "Root");
-
-        if (meNode && foeNode) {
-          return callback();
-        }
       }
 
-      if (++tries > 200) {
-        console.warn(
-          "[KabirAI] Hero models not found (" +
+      if (scene && !foeNode) {
+        foeNode = scene.getTransformNodeByName(FOE + "Root");
+      }
+
+      if (scene && meNode && foeNode) {
+        console.log("[KabirAI] Hero roots found:", AI, FOE);
+        return callback();
+      }
+
+      if (++tries > 400) {
+        console.error(
+          "[KabirAI] Timed out waiting for hero roots (" +
           AI + "Root / " + FOE + "Root)."
         );
 
