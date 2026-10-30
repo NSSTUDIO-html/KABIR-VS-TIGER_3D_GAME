@@ -591,6 +591,9 @@
 
     // Create Scene
     const scene = new BABYLON.Scene(engine);
+    // Share this exact scene with external game logic (including TigerAI).
+    window.gameScene = scene;
+    window.gameHeroes = window.gameHeroes || {};
     scene.clearColor = new BABYLON.Color4(0.52, 0.65, 0.78, 1); // Ice blue atmosphere
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     scene.fogColor = new BABYLON.Color3(0.52, 0.65, 0.78);
@@ -743,129 +746,56 @@
     
     
     // ==========================================
-    // FIVE SNOWY TREES - ICELAND ARENA
+    // FIVE SNOWY TREES - load the GLB once; use procedural fallback if invalid
     // ==========================================
+    const treePositions = [
+      new BABYLON.Vector3(35, 0, 35),
+      new BABYLON.Vector3(-35, 0, 35),
+      new BABYLON.Vector3(35, 0, -35),
+      new BABYLON.Vector3(35, 0, 60),
+      new BABYLON.Vector3(60, 0, 35)
+    ];
+
+    function createFallbackSnowTree(index, position) {
+      const tree = new BABYLON.TransformNode("fallbackTreeRoot_" + index, scene);
+      tree.position.copyFrom(position);
+      const trunkMat = new BABYLON.StandardMaterial("treeTrunkMat_" + index, scene);
+      trunkMat.diffuseColor = new BABYLON.Color3(0.22, 0.16, 0.12);
+      const snowMat = new BABYLON.StandardMaterial("treeSnowMat_" + index, scene);
+      snowMat.diffuseColor = new BABYLON.Color3(0.88, 0.96, 1);
+      const trunk = BABYLON.MeshBuilder.CreateCylinder("treeTrunk_" + index,
+        { diameterTop: 0.8, diameterBottom: 1.3, height: 7, tessellation: 7 }, scene);
+      trunk.parent = tree; trunk.position.y = 3.5; trunk.material = trunkMat;
+      [0, 1, 2].forEach(function (layer) {
+        const crown = BABYLON.MeshBuilder.CreateCylinder("treeCrown_" + index + "_" + layer,
+          { diameterTop: 0, diameterBottom: 8 - layer * 1.7, height: 7, tessellation: 7 }, scene);
+        crown.parent = tree; crown.position.y = 7 + layer * 4.2; crown.material = snowMat;
+      });
+      tree.scaling.setAll(1.8);
+      return tree;
+    }
 
     BABYLON.SceneLoader.ImportMesh(
-    "",
-    "../3_ASSETS/SCENES/iceland/",
-    "snowytree_1.glb",
-    scene,
-    function (meshes) {
-        console.log("Tree loaded successfully!", meshes);
+      "", "../3_ASSETS/SCENES/iceland/", "snowytree_1.glb", scene,
+      function (meshes) {
+        const master = new BABYLON.TransformNode("snowTreeMaster", scene);
+        meshes.forEach(function (mesh) { if (!mesh.parent) mesh.parent = master; });
+        master.position.copyFrom(treePositions[0]);
+        master.scaling.setAll(20);
+        for (let i = 1; i < treePositions.length; i++) {
+          const clone = master.clone("snowTree_" + i, null, false);
+          if (clone) { clone.position.copyFrom(treePositions[i]); clone.scaling.setAll(20); }
+          else createFallbackSnowTree(i, treePositions[i]);
+        }
+        console.log("Snow tree GLB loaded; instances:", treePositions.length);
+      },
+      null,
+      function (failedScene, message, exception) {
+        console.error("Snow tree GLB failed; using procedural trees:", message, exception);
+        treePositions.forEach(function (position, index) { createFallbackSnowTree(index, position); });
+      }
+    );
 
-        const root = new BABYLON.TransformNode("treeRoot", scene);
-
-        meshes.forEach(mesh => {
-            if (!mesh.parent) {
-                mesh.parent = root;
-            }
-        });
-
-        root.position.set(35, 10, 35);
-        root.scaling.setAll(20);
-    },
-    null,
-    function (scene, message, exception) {
-        console.error("Tree loading failed:", message, exception);
-    }
-);
-      BABYLON.SceneLoader.ImportMesh(
-    "",
-    "../3_ASSETS/SCENES/iceland/",
-    "snowytree_1.glb",
-    scene,
-    function (meshes) {
-        console.log("Tree loaded successfully!", meshes);
-
-        const root = new BABYLON.TransformNode("treeRoot", scene);
-
-        meshes.forEach(mesh => {
-            if (!mesh.parent) {
-                mesh.parent = root;
-            }
-        });
-
-        root.position.set(-35, 10, 35);
-        root.scaling.setAll(20);
-    },
-    null,
-    function (scene, message, exception) {
-        console.error("Tree loading failed:", message, exception);
-    }
-);
-      BABYLON.SceneLoader.ImportMesh(
-    "",
-    "../3_ASSETS/SCENES/iceland/",
-    "snowytree_1.glb",
-    scene,
-    function (meshes) {
-        console.log("Tree loaded successfully!", meshes);
-
-        const root = new BABYLON.TransformNode("treeRoot", scene);
-
-        meshes.forEach(mesh => {
-            if (!mesh.parent) {
-                mesh.parent = root;
-            }
-        });
-
-        root.position.set(35, 10, -35);
-        root.scaling.setAll(20);
-    },
-    null,
-    function (scene, message, exception) {
-        console.error("Tree loading failed:", message, exception);
-    }
-);
-      BABYLON.SceneLoader.ImportMesh(
-    "",
-    "../3_ASSETS/SCENES/iceland/",
-    "snowytree_1.glb",
-    scene,
-    function (meshes) {
-        console.log("Tree loaded successfully!", meshes);
-
-        const root = new BABYLON.TransformNode("treeRoot", scene);
-
-        meshes.forEach(mesh => {
-            if (!mesh.parent) {
-                mesh.parent = root;
-            }
-        });
-
-        root.position.set(35, 10, 60);
-        root.scaling.setAll(20);
-    },
-    null,
-    function (scene, message, exception) {
-        console.error("Tree loading failed:", message, exception);
-    }
-);
-BABYLON.SceneLoader.ImportMesh(
-    "",
-    "../3_ASSETS/SCENES/iceland/",
-    "snowytree_1.glb",
-    scene,
-    function (meshes) {
-        console.log("Tree loaded successfully!", meshes);
-
-        const root = new BABYLON.TransformNode("treeRoot", scene);
-
-        meshes.forEach(mesh => {
-            if (!mesh.parent) {
-                mesh.parent = root;
-            }
-        });
-
-        root.position.set(60, 10, 35);
-        root.scaling.setAll(20);
-    },
-    null,
-    function (scene, message, exception) {
-        console.error("Tree loading failed:", message, exception);
-    }
-);
       // ==========================================
 // HEROES: KABIR + TIGER
 // ==========================================
@@ -892,7 +822,10 @@ function loadHero(name, file, x, y, z, faceY, size) {
       animationGroups.forEach(group => group.stop());
 
       heroes[name] = { root, meshes, animationGroups };
+      window.gameHeroes = window.gameHeroes || {};
+      window.gameHeroes[name] = heroes[name];
       console.log(name + " loaded:", meshes.length, "meshes");
+      window.dispatchEvent(new CustomEvent("hero-loaded", { detail: { name: name, root: root } }));
     },
     null,
     function (scene, message, exception) {
@@ -1104,7 +1037,7 @@ const weaponShootAudio = {
     "katana": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/katana.mp3"),
     "dual-rifles": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/rifles.mp3"),
     "dual-axes": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/axes.mp3"),
-    "sniper-rifle": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/sniper.mp3"),
+    "sniper-rifle": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/rifles.mp3"),
     "dual-pistols": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/pistol-sound.mp3")
   }
 };
@@ -1114,6 +1047,7 @@ Object.values(weaponShootAudio).forEach(heroSounds => {
   Object.values(heroSounds).forEach(audio => {
     audio.preload = "auto";
     audio.volume = 0.8;
+    audio.addEventListener("error", () => console.warn("Weapon audio unavailable:", audio.src));
   });
 });
 
