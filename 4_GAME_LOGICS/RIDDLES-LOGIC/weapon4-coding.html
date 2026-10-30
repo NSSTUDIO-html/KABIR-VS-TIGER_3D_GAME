@@ -1,33 +1,58 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coding Weapon | Kabir vs Tiger 3D</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coding Weapon | Kabir vs Tiger 3D</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#f2f2f2;min-height:100vh;display:flex;justify-content:center;padding:16px}
-main{width:100%;max-width:640px}h1{font-size:1.3rem;margin:0 0 6px;color:#ff9f1c}
-.bar{display:flex;justify-content:space-between;font-size:.9rem;opacity:.85;margin-bottom:12px}
-.card{background:#1a1d24;border-radius:12px;padding:18px}
-#q{font-size:1.1rem;margin:0 0 14px;line-height:1.4}
-.o{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:2px solid #2d3340;border-radius:8px;background:#232834;color:inherit;font-size:1rem;cursor:pointer}
-.o:disabled{cursor:default}.ok{border-color:#2ecc71;background:#1d3a2a}.no{border-color:#e74c3c;background:#3a1d1d}
-#m{min-height:1.5em;margin:10px 0;font-weight:600}
-#n{padding:10px 18px;border:0;border-radius:8px;background:#ff9f1c;color:#111;font-weight:700;cursor:pointer}
-</style></head><body><main>
-<h1>⚔️ Coding Weapon</h1>
+:root{--g:#00ff41;--gd:#00a82a;--r:#ff3b3b;--c:#3df2ff;--bg:#020702}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;font-family:"Courier New",Courier,monospace;background:var(--bg);color:var(--g);min-height:100vh;display:flex;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));text-shadow:0 0 6px rgba(0,255,65,.55)}
+#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.35}
+body::after{content:"";position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 1px,transparent 1px,transparent 3px)}
+main{position:relative;z-index:1;width:100%;max-width:640px}
+.back{display:inline-block;margin-bottom:10px;color:var(--c);text-decoration:none;font-size:.85rem;text-shadow:0 0 6px var(--c)}
+.back:hover{text-decoration:underline}
+h1{font-size:1.15rem;margin:0 0 8px;color:var(--g);letter-spacing:1px;animation:glitch 4s infinite}
+h1::before{content:"root@vault:~# ";color:var(--gd)}
+h1::after{content:"█";margin-left:3px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@keyframes glitch{0%,92%,100%{transform:none}93%{transform:translateX(-3px);text-shadow:2px 0 var(--r),-2px 0 var(--c)}95%{transform:translateX(3px);text-shadow:-2px 0 var(--r),2px 0 var(--c)}97%{transform:none}}
+.bar{display:flex;justify-content:space-between;font-size:.85rem;color:var(--gd);margin-bottom:12px;letter-spacing:1px}
+.card{background:rgba(0,12,2,.85);border:1px solid var(--g);border-radius:6px;padding:18px;box-shadow:0 0 18px rgba(0,255,65,.35),inset 0 0 22px rgba(0,255,65,.08)}
+#q{font-size:1.05rem;margin:0 0 14px;line-height:1.45}
+#q::before{content:"> "}
+.o{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--gd);border-radius:3px;background:rgba(0,255,65,.05);color:var(--g);font:inherit;font-size:.95rem;text-shadow:inherit;cursor:pointer}
+.o:hover:not(:disabled){background:rgba(0,255,65,.15);border-color:var(--g);box-shadow:0 0 10px rgba(0,255,65,.45)}
+.o:disabled{cursor:default}
+.ok{border-color:var(--g);background:rgba(0,255,65,.2);box-shadow:0 0 12px rgba(0,255,65,.6)}
+.no{border-color:var(--r);color:#ff8a8a;background:rgba(255,59,59,.12);box-shadow:0 0 12px rgba(255,59,59,.5);text-shadow:0 0 5px var(--r)}
+#m{min-height:1.5em;margin:12px 0;font-weight:700;letter-spacing:.5px}
+#n{padding:10px 18px;border:1px solid var(--g);border-radius:2px;background:transparent;color:var(--g);font:inherit;font-weight:700;text-shadow:inherit;letter-spacing:1px;cursor:pointer}
+#n:hover,#n:active{background:var(--g);color:#000;text-shadow:none}
+@media (prefers-reduced-motion:reduce){#rain{display:none}h1,h1::after{animation:none}}
+</style></head><body><canvas id="rain"></canvas><main>
+<a href="Kabir-Intro-Chat.html" class="back">← Back to Chat</a>
+<h1>Coding Weapon</h1>
 <div class="bar"><span id="p"></span><span id="s"></span></div>
 <div class="card"><p id="q"></p><div id="a"></div><div id="m"></div><button id="n" hidden>Next</button></div>
 </main><script>
+const PASS=1;
 const Q=[["Which language adds structure to a webpage?", ["HTML", "SQL", "Python only", "Bash"], 0], ["Which language styles a webpage?", ["CSS", "HTML", "JSON", "SQL"], 0], ["Which language adds interactive behaviour to a webpage?", ["JavaScript", "Markdown", "XML only", "CSV"], 0], ["Which keyword declares a block-scoped variable that can be reassigned in JavaScript?", ["const", "let", "fixed", "define"], 1], ["Which keyword declares a block-scoped JavaScript variable that cannot be reassigned?", ["const", "let", "varname", "change"], 0], ["What does console.log(\"Hello\") do in JavaScript?", ["Deletes the page", "Prints a message to the console", "Creates a database", "Closes the browser"], 1], ["What is the result of 2 + 3 in JavaScript?", ["23", "5", "6", "Error"], 1], ["What is the result of 10 % 3 in JavaScript?", ["0", "1", "3", "3.33"], 1], ["Which symbol tests strict equality in JavaScript?", ["=", "==", "===", "=>"], 2], ["Which operator means logical AND in JavaScript?", ["||", "&&", "!", "**"], 1], ["Which operator means logical OR in JavaScript?", ["||", "&&", "%%", "//"], 0], ["Which statement executes code only when a condition is true?", ["if", "import", "return only", "break only"], 0], ["Which loop is commonly used to repeat code while a condition remains true?", ["if", "while", "const", "class"], 1], ["Which keyword defines a function in JavaScript?", ["function", "methodize", "make", "funclet"], 0], ["How do you call a function named startGame?", ["call startGame", "startGame()", "function startGame", "run = startGame"], 1], ["Which brackets create an array in JavaScript?", ["{}", "[]", "()", "<>"], 1], ["Which brackets commonly create an object literal in JavaScript?", ["{}", "[]", "()", "//"], 0], ["What is the first index of a JavaScript array?", ["1", "−1", "0", "10"], 2], ["What is the value of [10, 20, 30][1]?", ["10", "20", "30", "undefined"], 1], ["Which property gives the number of items in an array named items?", ["items.size()", "items.length", "items.count", "items.total()"], 1], ["Which method adds an item to the end of a JavaScript array?", ["push()", "pop()", "shift()", "slice()"], 0], ["Which method removes the last item from a JavaScript array?", ["push()", "pop()", "unshift()", "map()"], 1], ["Which keyword returns a value from a function?", ["send", "return", "output", "print"], 1], ["Which value represents a variable that has not been assigned a value?", ["undefined", "100", "true", "\"empty\""], 0], ["Which data type represents either true or false?", ["String", "Boolean", "Array", "Object"], 1], ["Which of these is a string in JavaScript?", ["42", "true", "\"Kabir\"", "null"], 2], ["What is the result of typeof 42 in JavaScript?", ["\"string\"", "\"number\"", "\"boolean\"", "\"array\""], 1], ["Which HTML tag creates a hyperlink?", ["<img>", "<a>", "<p>", "<h1>"], 1], ["Which HTML tag displays an image?", ["<image>", "<picture-file>", "<img>", "<src>"], 2], ["Which HTML element creates a button?", ["<button>", "<click>", "<press>", "<inputbutton>"], 0], ["Which CSS property changes text colour?", ["font-style", "color", "background-image", "text-align"], 1], ["Which CSS property changes an element's background colour?", ["background-color", "font-weight", "border-style", "line-height"], 0], ["Which CSS selector targets an element with id=\"hero\"?", [".hero", "#hero", "hero()", "*hero"], 1], ["Which CSS selector targets elements with class=\"weapon\"?", ["#weapon", ".weapon", "weapon()", "@weapon"], 1], ["Which CSS layout system is useful for arranging items in one dimension?", ["Flexbox", "SQL", "JSON", "DOM"], 0], ["What does DOM stand for?", ["Data Output Machine", "Document Object Model", "Digital Order Method", "Display Object Memory"], 1], ["Which JavaScript method selects an element by its ID?", ["document.getElementById()", "document.getClass()", "window.selectID()", "get.html()"], 0], ["Which event commonly occurs when a user clicks a button?", ["hoveronly", "click", "loadtext", "write"], 1], ["Which JavaScript method attaches an event handler to an element?", ["addEventListener()", "attachText()", "hookHTML()", "bindCSS()"], 0], ["Which HTML tag creates the largest heading?", ["<h1>", "<h6>", "<head>", "<title>"], 0], ["Which symbol starts a single-line comment in JavaScript?", ["//", "##", "<!--", "**"], 0], ["What does CSS stand for?", ["Cascading Style Sheets", "Computer Style System", "Creative Script Syntax", "Coded Style Sheets"], 0], ["Which HTML tag creates an unordered (bulleted) list?", ["<ul>", "<ol>", "<li> only", "<list>"], 0], ["What is the result of \"5\" + 3 in JavaScript?", ["8", "\"53\"", "Error", "\"8\""], 1], ["Which function converts a string to an integer in JavaScript?", ["parseInt()", "toText()", "makeInt()", "stringify()"], 0], ["Which loop is commonly used to repeat code a known number of times?", ["for", "if", "switch", "try"], 0], ["What does HTML stand for?", ["HyperText Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "HyperText Machine Logic"], 0], ["Which CSS property adds space inside an element's border?", ["margin", "padding", "gap-out", "outline"], 1], ["Which keyword creates a class in JavaScript?", ["class", "object", "struct", "make"], 0], ["Which method returns a random number between 0 and 1 in JavaScript?", ["Math.random()", "Math.rand()", "random.math()", "Math.round()"], 0]];
 const $=i=>document.getElementById(i);
-let i=0,sc=0,order=Q.map((_,k)=>k).sort(()=>Math.random()-.5);
+let i=0,sc=0,order=Q.map((_,k)=>k).sort(()=>Math.random()-.5).slice(0,1);
 function show(){
- if(i>=order.length){$("q").textContent="Finished! Weapons unlocked: "+sc+" / "+Q.length;$("a").innerHTML="";$("m").textContent="";$("n").textContent="Play again";$("n").hidden=false;$("n").onclick=()=>location.reload();return}
+ if(i>=order.length){$("q").textContent="MISSION COMPLETE // Weapons unlocked: "+sc+" / "+order.length;$("a").innerHTML="";$("m").textContent="";$("n").textContent="Back to Chat";$("n").hidden=false;$("n").onclick=()=>location.href="Kabir-Intro-Chat.html";return}
  const [q,o,ans]=Q[order[i]];
  const opts=o.map((t,k)=>[t,k===ans]).sort(()=>Math.random()-.5);
- $("p").textContent="Question "+(i+1)+" / "+Q.length;$("s").textContent="Unlocked: "+sc;
+ $("p").textContent="Question "+(i+1)+" / "+order.length;$("s").textContent="Unlocked: "+sc;
  $("q").textContent=q;$("a").innerHTML="";$("m").textContent="";$("n").hidden=true;
  opts.forEach(([t,c],k)=>{const b=document.createElement("button");b.className="o";b.textContent="ABCD"[k]+") "+t;
-  b.onclick=()=>{[...$("a").children].forEach((x,j)=>{x.disabled=true;if(opts[j][1])x.classList.add("ok")});
-   if(c){sc++;$("m").textContent="✅ Correct! Weapon unlocked."}else{b.classList.add("no");$("m").textContent="❌ Wrong. Weapon stays locked."}
+  b.onclick=()=>{localStorage.setItem("done_coding","1");[...$("a").children].forEach((x,j)=>{x.disabled=true;if(opts[j][1])x.classList.add("ok")});
+   if(c){sc++;if(sc>=PASS)localStorage.setItem("weapon_coding","1");$("m").style.color="";$("m").textContent="[ ACCESS GRANTED ] Correct! Weapon unlocked."}else{b.classList.add("no");$("m").style.color="#ff3b3b";$("m").textContent="[ ACCESS DENIED ] Wrong. Weapon stays locked."}
    $("s").textContent="Unlocked: "+sc;$("n").textContent=i==order.length-1?"Finish":"Next";$("n").hidden=false;$("n").onclick=()=>{i++;show()}};
   $("a").appendChild(b)});
 }
-show();
+if(localStorage.getItem("done_coding")==="1"){$("p").textContent="";$("q").textContent="[ ALREADY ATTEMPTED ] This weapon is already decided. Return to chat.";$("n").textContent="Back to Chat";$("n").hidden=false;$("n").onclick=()=>location.href="Kabir-Intro-Chat.html"}else show();
+(function(){var cv=document.getElementById("rain"),cx=cv.getContext("2d"),fs=16,cols,drops,chars="01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ#$%&<>/=+*";
+function size(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.ceil(cv.width/fs);drops=[];for(var i=0;i<cols;i++)drops[i]=Math.random()*-50}
+size();addEventListener("resize",size);
+setInterval(function(){cx.fillStyle="rgba(2,7,2,.12)";cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle="#00ff41";cx.font=fs+"px monospace";
+for(var i=0;i<cols;i++){cx.fillText(chars.charAt(Math.floor(Math.random()*chars.length)),i*fs,drops[i]*fs);if(drops[i]*fs>cv.height&&Math.random()>.975)drops[i]=0;drops[i]++}},60)})();
 </script></body></html>

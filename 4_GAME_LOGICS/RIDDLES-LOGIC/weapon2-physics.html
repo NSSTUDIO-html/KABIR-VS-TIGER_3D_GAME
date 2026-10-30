@@ -1,33 +1,58 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Physics Weapon | Kabir vs Tiger 3D</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Physics Weapon | Kabir vs Tiger 3D</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#f2f2f2;min-height:100vh;display:flex;justify-content:center;padding:16px}
-main{width:100%;max-width:640px}h1{font-size:1.3rem;margin:0 0 6px;color:#ff9f1c}
-.bar{display:flex;justify-content:space-between;font-size:.9rem;opacity:.85;margin-bottom:12px}
-.card{background:#1a1d24;border-radius:12px;padding:18px}
-#q{font-size:1.1rem;margin:0 0 14px;line-height:1.4}
-.o{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:2px solid #2d3340;border-radius:8px;background:#232834;color:inherit;font-size:1rem;cursor:pointer}
-.o:disabled{cursor:default}.ok{border-color:#2ecc71;background:#1d3a2a}.no{border-color:#e74c3c;background:#3a1d1d}
-#m{min-height:1.5em;margin:10px 0;font-weight:600}
-#n{padding:10px 18px;border:0;border-radius:8px;background:#ff9f1c;color:#111;font-weight:700;cursor:pointer}
-</style></head><body><main>
-<h1>⚔️ Physics Weapon</h1>
+:root{--g:#00ff41;--gd:#00a82a;--r:#ff3b3b;--c:#3df2ff;--bg:#020702}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;font-family:"Courier New",Courier,monospace;background:var(--bg);color:var(--g);min-height:100vh;display:flex;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));text-shadow:0 0 6px rgba(0,255,65,.55)}
+#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.35}
+body::after{content:"";position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 1px,transparent 1px,transparent 3px)}
+main{position:relative;z-index:1;width:100%;max-width:640px}
+.back{display:inline-block;margin-bottom:10px;color:var(--c);text-decoration:none;font-size:.85rem;text-shadow:0 0 6px var(--c)}
+.back:hover{text-decoration:underline}
+h1{font-size:1.15rem;margin:0 0 8px;color:var(--g);letter-spacing:1px;animation:glitch 4s infinite}
+h1::before{content:"root@vault:~# ";color:var(--gd)}
+h1::after{content:"█";margin-left:3px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@keyframes glitch{0%,92%,100%{transform:none}93%{transform:translateX(-3px);text-shadow:2px 0 var(--r),-2px 0 var(--c)}95%{transform:translateX(3px);text-shadow:-2px 0 var(--r),2px 0 var(--c)}97%{transform:none}}
+.bar{display:flex;justify-content:space-between;font-size:.85rem;color:var(--gd);margin-bottom:12px;letter-spacing:1px}
+.card{background:rgba(0,12,2,.85);border:1px solid var(--g);border-radius:6px;padding:18px;box-shadow:0 0 18px rgba(0,255,65,.35),inset 0 0 22px rgba(0,255,65,.08)}
+#q{font-size:1.05rem;margin:0 0 14px;line-height:1.45}
+#q::before{content:"> "}
+.o{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--gd);border-radius:3px;background:rgba(0,255,65,.05);color:var(--g);font:inherit;font-size:.95rem;text-shadow:inherit;cursor:pointer}
+.o:hover:not(:disabled){background:rgba(0,255,65,.15);border-color:var(--g);box-shadow:0 0 10px rgba(0,255,65,.45)}
+.o:disabled{cursor:default}
+.ok{border-color:var(--g);background:rgba(0,255,65,.2);box-shadow:0 0 12px rgba(0,255,65,.6)}
+.no{border-color:var(--r);color:#ff8a8a;background:rgba(255,59,59,.12);box-shadow:0 0 12px rgba(255,59,59,.5);text-shadow:0 0 5px var(--r)}
+#m{min-height:1.5em;margin:12px 0;font-weight:700;letter-spacing:.5px}
+#n{padding:10px 18px;border:1px solid var(--g);border-radius:2px;background:transparent;color:var(--g);font:inherit;font-weight:700;text-shadow:inherit;letter-spacing:1px;cursor:pointer}
+#n:hover,#n:active{background:var(--g);color:#000;text-shadow:none}
+@media (prefers-reduced-motion:reduce){#rain{display:none}h1,h1::after{animation:none}}
+</style></head><body><canvas id="rain"></canvas><main>
+<a href="Kabir-Intro-Chat.html" class="back">← Back to Chat</a>
+<h1>Physics Weapon</h1>
 <div class="bar"><span id="p"></span><span id="s"></span></div>
 <div class="card"><p id="q"></p><div id="a"></div><div id="m"></div><button id="n" hidden>Next</button></div>
 </main><script>
+const PASS=1;
 const Q=[["What force pulls objects toward Earth?", ["Friction", "Gravity", "Magnetism", "Tension"], 1], ["What is the SI unit of force?", ["Joule", "Watt", "Newton", "Pascal"], 2], ["What is the SI unit of energy?", ["Joule", "Ampere", "Volt", "Metre"], 0], ["What is the approximate speed of light in a vacuum?", ["3,000 m/s", "30,000 m/s", "3 × 10⁸ m/s", "300 m/s"], 2], ["Which instrument measures temperature?", ["Barometer", "Thermometer", "Ammeter", "Speedometer"], 1], ["Which instrument measures electric current?", ["Ammeter", "Voltmeter", "Thermometer", "Hydrometer"], 0], ["What is the SI unit of electric current?", ["Volt", "Ohm", "Ampere", "Watt"], 2], ["What is the SI unit of power?", ["Joule", "Watt", "Newton", "Coulomb"], 1], ["Which energy does a moving object possess?", ["Kinetic", "Chemical", "Nuclear", "Potential only"], 0], ["Stored energy due to an object's position is called what?", ["Sound energy", "Kinetic energy", "Potential energy", "Light energy"], 2], ["Sound travels fastest through which of these?", ["Vacuum", "Gases", "Liquids", "Solids (generally)"], 3], ["Can sound travel through a vacuum?", ["Yes, always", "No", "Only at night", "Only with light"], 1], ["Which type of lens converges parallel light rays?", ["Concave", "Convex", "Plane glass", "None"], 1], ["Which mirror is commonly used as a rear-view mirror in vehicles?", ["Plane", "Concave", "Convex", "Parabolic only"], 2], ["What is the SI unit of frequency?", ["Hertz", "Decibel", "Metre", "Second"], 0], ["Frequency measures what?", ["Mass", "Cycles per second", "Distance", "Force"], 1], ["What is the approximate acceleration due to gravity near Earth's surface?", ["1.8 m/s²", "5 m/s²", "9.8 m/s²", "98 m/s²"], 2], ["Which law states that every action has an equal and opposite reaction?", ["Newton's first law", "Newton's second law", "Newton's third law", "Ohm's law"], 2], ["What is the formula for speed?", ["Distance ÷ time", "Time ÷ distance", "Mass × acceleration", "Force ÷ area"], 0], ["A car travels 100 metres in 5 seconds. What is its speed?", ["5 m/s", "10 m/s", "20 m/s", "50 m/s"], 2], ["What is the SI unit of mass?", ["Gram", "Kilogram", "Newton", "Pound"], 1], ["Which device converts electrical energy into mechanical rotation?", ["Electric motor", "Generator", "Battery", "Fuse"], 0], ["Which device converts mechanical energy into electrical energy?", ["Motor", "Generator", "Heater", "Switch"], 1], ["What is the SI unit of electrical resistance?", ["Ohm", "Volt", "Ampere", "Watt"], 0], ["Which law relates voltage, current and resistance?", ["Boyle's law", "Ohm's law", "Newton's law", "Snell's law"], 1], ["If voltage is 12 V and resistance is 4 Ω, what is the current?", ["2 A", "3 A", "4 A", "48 A"], 1], ["What happens to most materials when heated?", ["They always shrink", "They generally expand", "They lose all mass", "They stop moving"], 1], ["Heat transfer through direct particle contact is called what?", ["Conduction", "Convection", "Radiation", "Reflection"], 0], ["Heat transfer by movement of a fluid is called what?", ["Conduction", "Convection", "Reflection", "Refraction"], 1], ["How does heat from the Sun reach Earth?", ["Conduction", "Convection", "Radiation", "Sound waves"], 2], ["Which colour of visible light has the longest wavelength?", ["Violet", "Blue", "Green", "Red"], 3], ["What is the bouncing back of light from a surface called?", ["Refraction", "Reflection", "Diffraction", "Absorption"], 1], ["What is the bending of light as it enters another medium called?", ["Reflection", "Refraction", "Radiation", "Vibration"], 1], ["Which material is a good electrical conductor?", ["Rubber", "Glass", "Copper", "Dry wood"], 2], ["Which material is commonly used as an electrical insulator?", ["Copper", "Aluminium", "Iron", "Rubber"], 3], ["What does a fuse protect a circuit against?", ["Low sound", "Excessive current", "Low temperature", "Light"], 1], ["Which type of charge does an electron have?", ["Positive", "Negative", "Neutral", "Both positive and negative"], 1], ["Which particles are found in an atom's nucleus?", ["Protons and neutrons", "Electrons only", "Photons only", "Electrons and photons"], 0], ["What is the charge of a proton?", ["Negative", "Positive", "Neutral", "Variable in ordinary atoms"], 1], ["Which simple machine is a seesaw?", ["Pulley", "Lever", "Screw", "Wedge"], 1], ["What is pressure equal to?", ["Force × area", "Force ÷ area", "Mass × speed", "Distance ÷ time"], 1], ["What is the SI unit of pressure?", ["Pascal", "Joule", "Newton", "Watt"], 0], ["Why does an object appear lighter when immersed in water?", ["Water destroys its mass", "Buoyant force acts upward", "Gravity disappears", "Its volume becomes zero"], 1], ["Which principle explains buoyancy in fluids?", ["Archimedes' principle", "Ohm's law", "Hooke's law", "Kepler's law"], 0], ["What is the approximate value of absolute zero?", ["0°C", "−100°C", "−273.15°C", "−373°C"], 2], ["Which type of wave is sound in air?", ["Transverse electromagnetic", "Longitudinal mechanical", "Radio wave", "Light wave"], 1], ["What is the time taken for one complete oscillation called?", ["Frequency", "Period", "Amplitude", "Wavelength"], 1], ["Which energy source is renewable?", ["Coal", "Petroleum", "Solar energy", "Natural gas"], 2], ["What happens to the gravitational force between two objects when their separation increases, with masses unchanged?", ["It increases", "It decreases", "It stays infinite", "It becomes electric force"], 1], ["Which instrument measures atmospheric pressure?", ["Barometer", "Ammeter", "Voltmeter", "Calorimeter"], 0]];
 const $=i=>document.getElementById(i);
-let i=0,sc=0,order=Q.map((_,k)=>k).sort(()=>Math.random()-.5);
+let i=0,sc=0,order=Q.map((_,k)=>k).sort(()=>Math.random()-.5).slice(0,1);
 function show(){
- if(i>=order.length){$("q").textContent="Finished! Weapons unlocked: "+sc+" / "+Q.length;$("a").innerHTML="";$("m").textContent="";$("n").textContent="Play again";$("n").hidden=false;$("n").onclick=()=>location.reload();return}
+ if(i>=order.length){$("q").textContent="MISSION COMPLETE // Weapons unlocked: "+sc+" / "+order.length;$("a").innerHTML="";$("m").textContent="";$("n").textContent="Back to Chat";$("n").hidden=false;$("n").onclick=()=>location.href="Kabir-Intro-Chat.html";return}
  const [q,o,ans]=Q[order[i]];
  const opts=o.map((t,k)=>[t,k===ans]).sort(()=>Math.random()-.5);
- $("p").textContent="Question "+(i+1)+" / "+Q.length;$("s").textContent="Unlocked: "+sc;
+ $("p").textContent="Question "+(i+1)+" / "+order.length;$("s").textContent="Unlocked: "+sc;
  $("q").textContent=q;$("a").innerHTML="";$("m").textContent="";$("n").hidden=true;
  opts.forEach(([t,c],k)=>{const b=document.createElement("button");b.className="o";b.textContent="ABCD"[k]+") "+t;
-  b.onclick=()=>{[...$("a").children].forEach((x,j)=>{x.disabled=true;if(opts[j][1])x.classList.add("ok")});
-   if(c){sc++;$("m").textContent="✅ Correct! Weapon unlocked."}else{b.classList.add("no");$("m").textContent="❌ Wrong. Weapon stays locked."}
+  b.onclick=()=>{localStorage.setItem("done_physics","1");[...$("a").children].forEach((x,j)=>{x.disabled=true;if(opts[j][1])x.classList.add("ok")});
+   if(c){sc++;if(sc>=PASS)localStorage.setItem("weapon_physics","1");$("m").style.color="";$("m").textContent="[ ACCESS GRANTED ] Correct! Weapon unlocked."}else{b.classList.add("no");$("m").style.color="#ff3b3b";$("m").textContent="[ ACCESS DENIED ] Wrong. Weapon stays locked."}
    $("s").textContent="Unlocked: "+sc;$("n").textContent=i==order.length-1?"Finish":"Next";$("n").hidden=false;$("n").onclick=()=>{i++;show()}};
   $("a").appendChild(b)});
 }
-show();
+if(localStorage.getItem("done_physics")==="1"){$("p").textContent="";$("q").textContent="[ ALREADY ATTEMPTED ] This weapon is already decided. Return to chat.";$("n").textContent="Back to Chat";$("n").hidden=false;$("n").onclick=()=>location.href="Kabir-Intro-Chat.html"}else show();
+(function(){var cv=document.getElementById("rain"),cx=cv.getContext("2d"),fs=16,cols,drops,chars="01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ#$%&<>/=+*";
+function size(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.ceil(cv.width/fs);drops=[];for(var i=0;i<cols;i++)drops[i]=Math.random()*-50}
+size();addEventListener("resize",size);
+setInterval(function(){cx.fillStyle="rgba(2,7,2,.12)";cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle="#00ff41";cx.font=fs+"px monospace";
+for(var i=0;i<cols;i++){cx.fillText(chars.charAt(Math.floor(Math.random()*chars.length)),i*fs,drops[i]*fs);if(drops[i]*fs>cv.height&&Math.random()>.975)drops[i]=0;drops[i]++}},60)})();
 </script></body></html>

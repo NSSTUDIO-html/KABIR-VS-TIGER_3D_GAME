@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kabir vs Tiger – Intro Chat</title>
+<style>
+:root{--g:#00ff41;--gd:#00a82a;--r:#ff3b3b;--c:#3df2ff;--bg:#020702;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--g);font-family:"Courier New",Courier,monospace;min-height:100vh;display:flex;justify-content:center;text-shadow:0 0 6px rgba(0,255,65,.55)}
+#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.35}
+body::after{content:"";position:fixed;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 1px,transparent 1px,transparent 3px)}
+.app{position:relative;z-index:1;width:100%;max-width:480px;display:flex;flex-direction:column;min-height:100vh;padding:14px}
+.term{border:1px solid var(--g);background:rgba(0,12,2,.82);box-shadow:0 0 18px rgba(0,255,65,.35),inset 0 0 22px rgba(0,255,65,.08);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;flex:1}
+.bar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--gd);font-size:12px;color:var(--gd)}
+.bar i{width:9px;height:9px;border-radius:50%;background:var(--gd);display:inline-block}
+.bar i:nth-child(1){background:var(--r)}.bar i:nth-child(2){background:#ffb100}
+.bar span{margin-left:6px}
+header{text-align:center;padding:14px 10px 10px;border-bottom:1px dashed var(--gd)}
+header h1{margin:0;font-size:20px;letter-spacing:2px;animation:glitch 4s infinite}
+header p{margin:6px 0 0;font-size:12px;color:var(--gd)}
+.vs{display:flex;justify-content:center;gap:10px;align-items:center;margin-top:10px;font-weight:700;font-size:12px}
+.pill{padding:3px 10px;border:1px solid;border-radius:2px}
+.pill.k{color:var(--c);border-color:var(--c);text-shadow:0 0 6px var(--c)}
+.pill.t{color:var(--r);border-color:var(--r);text-shadow:0 0 6px var(--r)}
+@keyframes glitch{0%,92%,100%{transform:none;text-shadow:0 0 6px rgba(0,255,65,.55)}93%{transform:translateX(-3px);text-shadow:2px 0 var(--r),-2px 0 var(--c)}95%{transform:translateX(3px);text-shadow:-2px 0 var(--r),2px 0 var(--c)}97%{transform:none}}
+#chat{flex:1;display:flex;flex-direction:column;gap:14px;padding:16px 12px}
+.row{opacity:0;transform:translateY(10px);animation:pop .3s ease forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+.name{font-size:11px;margin-bottom:3px;letter-spacing:1px}
+.kabir .name{color:var(--c);text-shadow:0 0 6px var(--c)}
+.tiger .name{color:var(--r);text-shadow:0 0 6px var(--r)}
+.bubble{padding:9px 12px;font-size:14px;line-height:1.45;border-left:3px solid;background:rgba(0,255,65,.05);min-height:38px;word-break:break-word}
+.kabir .bubble{border-color:var(--c);color:var(--c);text-shadow:0 0 5px rgba(61,242,255,.6)}
+.tiger .bubble{border-color:var(--r);color:#ff8a8a;text-shadow:0 0 5px rgba(255,59,59,.6);background:rgba(255,59,59,.06)}
+.kabir .bubble::before{content:"> "}.tiger .bubble::before{content:"# "}
+.cur::after{content:"█";animation:blink .7s steps(1) infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:6px;height:6px;background:currentColor;animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.weapons{display:none;border-top:1px dashed var(--gd);padding:14px 10px;text-align:center;animation:pop .5s ease forwards}
+.weapons h2{margin:0 0 12px;font-size:13px;font-weight:400;color:var(--gd);letter-spacing:1px}
+.slots{display:flex;justify-content:center;gap:7px}
+.slot{width:60px;height:76px;border:1px solid var(--r);color:var(--r);text-shadow:0 0 6px var(--r);background:rgba(255,59,59,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:22px;text-decoration:none;cursor:pointer;border-radius:3px;animation:shake 2.4s infinite}
+.slot small{font-size:9px;letter-spacing:.5px}
+.slot em{font-style:normal;font-size:8px;opacity:.85}
+.slot:nth-child(2){animation-delay:.2s}.slot:nth-child(3){animation-delay:.4s}.slot:nth-child(4){animation-delay:.6s}.slot:nth-child(5){animation-delay:.8s}
+.slot.open{border-color:var(--g);color:var(--g);text-shadow:0 0 6px var(--g);background:rgba(0,255,65,.1);box-shadow:0 0 12px rgba(0,255,65,.5);animation:none}
+@keyframes shake{0%,85%,100%{transform:none}90%{transform:translateX(-2px)}95%{transform:translateX(2px)}}
+.slot.dead{animation:none;cursor:not-allowed;border-style:dashed;opacity:.85}
+.go{display:none;margin-top:12px;padding:11px 22px;border:1px solid var(--g);background:var(--g);color:#000;text-shadow:none;font-weight:700;letter-spacing:2px;text-decoration:none;border-radius:2px;box-shadow:0 0 18px rgba(0,255,65,.8);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 6px rgba(0,255,65,.4)}}
+.hint{margin:8px 0 0;font-size:12px;color:var(--gd)}
+.score{margin:12px 0 0;font-weight:700;letter-spacing:1px}
+button{margin-top:12px;font:inherit;font-weight:700;padding:9px 18px;border:1px solid var(--g);border-radius:2px;background:transparent;color:var(--g);text-shadow:inherit;cursor:pointer;letter-spacing:1px}
+button:hover,button:active{background:var(--g);color:#000;text-shadow:none}
+@media (prefers-reduced-motion:reduce){#rain{display:none}header h1,.slot{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div class="app"><div class="term">
+  <div class="bar"><i></i><i></i><i></i><span>root@kabir-vs-tiger:~# ./ai_combat_mode</span></div>
+  <header>
+    <h1>KABIR vs TIGER 3D</h1>
+    <p>[ AI COMBAT MODE · SECURE CHANNEL ]</p>
+    <div class="vs"><span class="pill k">KABIR · YOU</span><span>VS</span><span class="pill t">TIGER · AI</span></div>
+  </header>
+  <div id="chat"></div>
+  <div class="weapons" id="weapons">
+    <h2>&gt; WEAPON VAULT — TAP A LOCK TO HACK IT</h2>
+    <div class="slots">
+<a class="slot" data-key="maths" data-label="MATHS" data-icon="🗡️"></a>
+<a class="slot" data-key="physics" data-label="PHYSICS" data-icon="🏹"></a>
+<a class="slot" data-key="chemistry" data-label="CHEMISTRY" data-icon="💣"></a>
+<a class="slot" data-key="coding" data-label="CODING" data-icon="🔫"></a>
+<a class="slot" data-key="english" data-label="ENGLISH" data-icon="🛡️"></a>
+</div>
+    <p class="score" id="score">ACCESS GRANTED: 0 / 5</p>
+    <p class="hint" id="hint"></p>
+    <a class="go" id="go">[ ▶ START GAME ]</a><br>
+    <button id="replay">[ REPLAY CHAT ]</button> <button id="reset">[ RESET ALL ]</button>
+  </div>
+</div></div>
+<script>
+var script=[
+ {who:"kabir",text:"Who are you?"},
+ {who:"tiger",text:"You want to defeat me."},
+ {who:"kabir",text:"Ok."},
+ {who:"tiger",text:"Solve 5 riddle MCQs to unlock 10 weapons. You have 5, I have 5."},
+ {who:"kabir",text:"Ok, cool. I will defeat you!"},
+ {who:"tiger",text:"There’s a risk in this game: if you can’t answer correctly, I will terminate that wrong MCQ’s weapon."},
+ {who:"kabir",text:"Ok."},
+ {who:"tiger",text:"Ok, let’s see. Out of 5, how many did you get?"}
+];
+/* ====== EDIT THESE 2 THINGS ====== */
+var PAGES={maths:"weapon1-maths.html",physics:"weapon2-physics.html",chemistry:"weapon3-chemistry.html",coding:"weapon4-coding.html",english:"weapon5-english.html"};
+var GAME_URL="../../1_FRONTEND/KABIR-VS-AI.html"; /* your main 3D game file */
+/* ================================= */
+function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+var chat=document.getElementById("chat"),box=document.getElementById("weapons"),timers=[];
+function later(fn,ms){timers.push(setTimeout(fn,ms))}
+function down(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}
+function row(m){
+  var r=document.createElement("div");r.className="row "+m.who;
+  var n=document.createElement("div");n.className="name";n.textContent=m.who==="kabir"?"[KABIR // PLAYER]":"[TIGER // AI]";
+  var b=document.createElement("div");b.className="bubble";
+  r.appendChild(n);r.appendChild(b);
+  return {r:r,b:b};
+}
+function type(el,text,done){
+  var i=0;el.textContent="";el.classList.add("cur");
+  (function step(){
+    if(i>=text.length){el.classList.remove("cur");done();return}
+    el.textContent=text.slice(0,++i);down();
+    later(step,28);
+  })();
+}
+function play(i){
+  if(i>=script.length){box.style.display="block";try{localStorage.setItem("intro_seen","1")}catch(e){}down();return}
+  var m=script[i],x=row(m);
+  x.b.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
+  chat.appendChild(x.r);down();
+  later(function(){type(x.b,m.text,function(){later(function(){play(i+1)},700)})},800);
+}
+function start(){
+  timers.forEach(clearTimeout);timers=[];
+  chat.innerHTML="";box.style.display="none";
+  later(function(){play(0)},500);
+}
+function refresh(){
+  var n=0,d=0;
+  document.querySelectorAll(".slot").forEach(function(a){
+    var k=a.dataset.key,ok=get("weapon_"+k)==="1",done=get("done_"+k)==="1";
+    if(ok)n++;if(done||ok)d++;
+    a.classList.toggle("open",ok);a.classList.toggle("dead",done&&!ok);
+    if(ok){a.innerHTML=a.dataset.icon+"<small>"+a.dataset.label+"</small><em>UNLOCKED</em>";a.removeAttribute("href")}
+    else if(done){a.innerHTML="☠️<small>"+a.dataset.label+"</small><em>TERMINATED</em>";a.removeAttribute("href")}
+    else{a.innerHTML="🔒<small>"+a.dataset.label+"</small><em>LOCKED</em>";a.href=PAGES[k]}
+  });
+  document.getElementById("score").textContent="ACCESS GRANTED: "+n+" / 5";
+  var go=document.getElementById("go");
+  if(d>=5){go.style.display="inline-block";go.href=GAME_URL;document.getElementById("hint").textContent="All 5 locks resolved. Enter the arena."}
+  else{go.style.display="none";document.getElementById("hint").textContent="Locks resolved: "+d+" / 5 — finish all 5 to start the game."}
+}
+refresh();window.addEventListener("pageshow",refresh);
+document.getElementById("replay").addEventListener("click",start);
+document.getElementById("reset").addEventListener("click",function(){try{Object.keys(localStorage).forEach(function(k){if(/^(weapon_|done_|intro_seen)/.test(k))localStorage.removeItem(k)})}catch(e){}location.reload()});
+if(get("intro_seen")==="1"){box.style.display="block"}else{start()}
+/* matrix rain */
+(function(){
+  var cv=document.getElementById("rain"),cx=cv.getContext("2d"),fs=16,cols,drops,chars="01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ#$%&<>/\\=+*";
+  function size(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.ceil(cv.width/fs);drops=[];for(var i=0;i<cols;i++)drops[i]=Math.random()*-50}
+  size();addEventListener("resize",size);
+  setInterval(function(){
+    cx.fillStyle="rgba(2,7,2,.12)";cx.fillRect(0,0,cv.width,cv.height);
+    cx.fillStyle="#00ff41";cx.font=fs+"px monospace";
+    for(var i=0;i<cols;i++){
+      cx.fillText(chars.charAt(Math.floor(Math.random()*chars.length)),i*fs,drops[i]*fs);
+      if(drops[i]*fs>cv.height&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    }
+  },60);
+})();
+</script>
+</body>
+</html>
