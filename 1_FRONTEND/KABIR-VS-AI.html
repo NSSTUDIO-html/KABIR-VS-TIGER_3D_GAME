@@ -569,8 +569,12 @@
   <script src="../4_GAME_LOGICS/controls.js"></script>
   <script src="../4_GAME_LOGICS/pause.js"></script>
   <script src="../5_PHYSICS/physics.js"></script>
+  <script>
+    // Kabir is the human player; Tiger is controlled by AI.
+    try { localStorage.setItem("player_hero", "kabir"); } catch (e) {}
+  </script>
   <script src="../4_GAME_LOGICS/weapon-access.js"></script>
-<script src="../6_AI/tiger-ai.js"></script>
+  <script src="../6_AI/tiger-ai.js"></script>
   <!-- SCENE + TREES -->
   <script>
   (function () {
@@ -802,6 +806,41 @@
 const HERO_PATH = "../3_ASSETS/HEROS/";
 const heroes = {};   // heroes.kabir, heroes.tiger
 
+function registerHero(name, root, meshes, animationGroups) {
+  heroes[name] = { root, meshes, animationGroups: animationGroups || [] };
+  window.gameHeroes = window.gameHeroes || {};
+  window.gameHeroes[name] = heroes[name];
+  window.dispatchEvent(new CustomEvent("hero-loaded", { detail: { name: name, root: root } }));
+}
+
+// Simple stand-in body so the game and the AI still work if a GLB fails to load
+function createFallbackHero(name, x, y, z, faceY, size) {
+  const root = new BABYLON.TransformNode(name + "Root", scene);
+  const mat = new BABYLON.StandardMaterial(name + "FallbackMat", scene);
+  mat.diffuseColor = name === "kabir"
+    ? new BABYLON.Color3(0.9, 0.15, 0.15)
+    : new BABYLON.Color3(0.1, 0.75, 0.25);
+
+  const body = BABYLON.MeshBuilder.CreateCylinder(name + "FallbackBody",
+    { height: 1.3, diameterTop: 0.6, diameterBottom: 0.8, tessellation: 12 }, scene);
+  body.parent = root; body.position.y = 0.65; body.material = mat;
+
+  const head = BABYLON.MeshBuilder.CreateSphere(name + "FallbackHead",
+    { diameter: 0.5 }, scene);
+  head.parent = root; head.position.y = 1.55; head.material = mat;
+
+  // small "nose" so you can see which way the hero faces
+  const nose = BABYLON.MeshBuilder.CreateBox(name + "FallbackNose",
+    { width: 0.12, height: 0.12, depth: 0.35 }, scene);
+  nose.parent = root; nose.position.set(0, 1.55, 0.3); nose.material = mat;
+
+  root.position.set(x, y, z);
+  root.rotation.y = faceY;
+  root.scaling.setAll(size);
+  registerHero(name, root, [body, head, nose], []);
+  console.warn(name + ": using placeholder body (GLB did not load)");
+}
+
 function loadHero(name, file, x, y, z, faceY, size) {
   BABYLON.SceneLoader.ImportMesh(
     "",
@@ -821,15 +860,13 @@ function loadHero(name, file, x, y, z, faceY, size) {
 
       animationGroups.forEach(group => group.stop());
 
-      heroes[name] = { root, meshes, animationGroups };
-      window.gameHeroes = window.gameHeroes || {};
-      window.gameHeroes[name] = heroes[name];
+      registerHero(name, root, meshes, animationGroups);
       console.log(name + " loaded:", meshes.length, "meshes");
-      window.dispatchEvent(new CustomEvent("hero-loaded", { detail: { name: name, root: root } }));
     },
     null,
-    function (scene, message, exception) {
+    function (failedScene, message, exception) {
       console.error(name + " loading failed:", message, exception);
+      if (!heroes[name]) createFallbackHero(name, x, y, z, faceY, size);
     }
   );
 }
