@@ -102,6 +102,7 @@ var PAGES={maths:"weapon1-maths.html",physics:"weapon2-physics.html",chemistry:"
 var GAME_URL="../../1_FRONTEND/KABIR-VS-AI.html"; /* your main 3D game file */
 /* ================================= */
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+try{localStorage.setItem("player_hero","kabir")}catch(e){}
 var chat=document.getElementById("chat"),box=document.getElementById("weapons"),timers=[];
 function later(fn,ms){timers.push(setTimeout(fn,ms))}
 function down(){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})}
