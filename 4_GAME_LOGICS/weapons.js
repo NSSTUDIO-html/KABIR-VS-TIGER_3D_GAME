@@ -36,7 +36,7 @@
     kabir: {
       "katana":       { file: "../3_ASSETS/WEAPONS/katana.glb",       type: "melee", style: "slash",  count: 1, length: 0.55, damage: 10, cooldown: 0.60 },
       "dual-rifles":  { file: "../3_ASSETS/WEAPONS/rifle-a.glb",  type: "gun",   style: "rifle",  count: 2, length: 0.40, damage: 3,  cooldown: 0.90, burst: 3, speed: 200 },
-      "dual-axes":    { file: "../3_ASSETS/WEAPONS/axe_low_poly.glb",    type: "melee", style: "chop",   count: 2, length: 0.40, damage: 12, cooldown: 0.90 },
+      "dual-axes":    { file: "../3_ASSETS/WEAPONS/axe_low_poly-compressed.glb",    type: "melee", style: "chop",   count: 2, length: 0.40, damage: 12, cooldown: 0.90 },
       "sniper-rifle": { file: "../3_ASSETS/WEAPONS/sniper_rifle.glb", type: "gun",   style: "sniper", count: 1, length: 0.60, damage: 20, cooldown: 1.60, speed: 320, bulletSize: 1.7 },
       "dual-pistols": { file: "../3_ASSETS/WEAPONS/m1911_pistol.glb", type: "gun",   style: "pistol", count: 2, length: 0.20, damage: 4,  cooldown: 0.40, speed: 170 }
     }
