@@ -566,10 +566,14 @@
   };
 </script>
 <script src="../4_GAME_LOGICS/weapons.js"></script>
+  <script src="../4_GAME_LOGICS/bullets.js"></script>
+  <script src="../4_GAME_LOGICS/final-shot.js"></script>
+
   <script src="../4_GAME_LOGICS/controls.js"></script>
-  <script src="../4_GAME_LOGICS/keyboard-controls.js"></script>
   <script src="../4_GAME_LOGICS/pause.js"></script>
+  <script src="../4_GAME_LOGICS/keyboard-controls.js"></script>
   <script src="../4_GAME_LOGICS/camera-controls.js"></script>
+  
   <script src="../5_PHYSICS/physics.js"></script>
   <script>
     // Tiger is the human player; Kabir is controlled by AI.
@@ -613,7 +617,7 @@
     ipc.exposure = 1.1;
 
     // Camera
-    const camera = new BABYLON.ArcRotateCamera('orbit', Math.PI / 4, Math.PI / 3.2, 90, new BABYLON.Vector3(0, 0, 0), scene);
+    const camera = new BABYLON.ArcRotateCamera('orbit', -Math.PI / 2, Math.PI / 3.2, 90, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(canvas, true);
     camera.inertia = 0.9;
     camera.panningInertia = 0.9;
@@ -655,24 +659,22 @@
       let z = positions[i + 2];
       let distFromCenter = Math.sqrt(x * x + z * z);
       
-      if (distFromCenter < 52) {
-        // Multi-frequency procedural noise simulation for jagged mountain peaks and ridges
-        let h = Math.sin(x * 0.08) * Math.cos(z * 0.08) * 6 +
-                Math.sin(x * 0.2) * Math.cos(z * 0.2) * 2.5 +
-                Math.cos(x * 0.03 + z * 0.03) * 8;
-        
-        // Island falloff shape (higher in center, dropping off smoothly near shores)
-        let falloff = Math.max(0, 1 - (distFromCenter / 50));
-        falloff = falloff * falloff * (3 - 2 * falloff); // Smoothstep
-        
-        positions[i + 1] = (h * falloff * 1.4) + (falloff * 22);
+      // FLAT fighting arena: heroes walk on level ground (no climbing / floating).
+      // Flat out to radius 46 (same as controls.js arenaRadius), then a short slope to the sea.
+      const ARENA_FLAT_Y = 5;        // arena ground height (heroes spawn at y = 5)
+      if (distFromCenter <= 46) {
+        positions[i + 1] = ARENA_FLAT_Y;
+      } else if (distFromCenter < 52) {
+        let t = (distFromCenter - 46) / 6;
+        t = t * t * (3 - 2 * t);     // smoothstep
+        positions[i + 1] = ARENA_FLAT_Y * (1 - t) + (-1.5) * t;
       } else {
-        // Underwater shelves / beach edge
-        positions[i + 1] = -1.5;
+        positions[i + 1] = -1.5;     // underwater shelf
       }
     }
     ground.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
     ground.createNormals();
+    ground.refreshBoundingInfo();   // so hero ground-picking sees the new heights
 
     // Ice Material
     const iceMat = new BABYLON.StandardMaterial("iceMat", scene);
@@ -1076,7 +1078,7 @@ const weaponShootAudio = {
     "katana": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/katana.mp3"),
     "dual-rifles": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/rifles.mp3"),
     "dual-axes": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/axes.mp3"),
-    "sniper-rifle": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/rifles.mp3"),
+    "sniper-rifle": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/sniper.mp3"),
     "dual-pistols": new Audio("../8_MEDIA-DESIGNS/SOUNDS-AUDIOS/pistol-sound.mp3")
   }
 };
